@@ -379,7 +379,7 @@ pnpm test:e2e
 |---|---|
 | Bora Bayık | Proje Yöneticisi + Veritabanı |
 | UI/UX sorumlusu | Tasarım (Figma) |
-| Araştırmacı | KTÜ hoca/ders/bölüm listesi |
+| Eyüp Purtaş | KTÜ hoca/ders/bölüm listesi |
 | Kodlayıcı | Frontend geliştirme |
 | PR Reviewer | Kod inceleme ve güvenlik |
 
