@@ -1,0 +1,24 @@
+## Renk Paleti
+
+### Ana Zemin ve Yüzey Renkleri
+* **#F6F1E7** (Sıcak Krem/Bej): Sitenin ana arka plan rengi.
+* **#FFFCF3** (Açık Fildişi): CTA (Hemen Başla) butonunun üzerine gelindiğinde (hover) beliren ton.
+* **#0e4a6b** (Gece Mavisi): Footer (sayfa altı) arka planı için kullanılan tok, koyu mavi.
+
+### Marka ve Vurgu Renkleri (Accent Colors)
+* **#06283a** (Derin Lacivert): Sitenin ana karakteristiğini oluşturan renk. Büyük başlıklar, giriş yap butonu, aktif arama çubuğu çerçevesi ve sıralama numaralarının arka planında kullanılıyor.
+* **#006392** (Akademik Mavi): Sitenin "aksiyon" rengi. KTÜ amblemi, metin içi vurgular (birlikte yazısı), buton hover efektleri ve linkler bu renkte.
+* **#C8941A** (Antik Altın): Yıldız değerlendirmeleri (StarRating) ve "Bu Hafta Trend" kısmındaki alev ikonu için kullanılan şık altın/hardal tonu.
+* **#f0c875** (Açık Altın/Sarı): Sadece CTA banner'ının içindeki vurgusunda parlayan açık sarı.
+* **#2f8c4f** (Sakin Yeşil): Hocaların trend artış oranlarında ve ok ikonlarında kullanılan güven verici yeşil.
+
+### Metin ve Tipografi Tonları
+* **#2a2520** (Koyu Kahve/Siyah): Genel gövde metinleri ve elle çizilmiş gibi duran SVG ikonlarının (kep, hoca, harita) çizgi rengi.
+* **#3d362e** & **#4b443c**: Okunabilirliği artırmak için kullanılan, tam siyah olmayan metin renkleri.
+* **#6b6356** & **#8b8374**: Yardımcı metinler, bölüm isimleri ve pasif ikonlar için kullanılan grimsi-kahve tonları.
+* **#a8a090**: Arama çubuğundaki (placeholder) ve yorum tarihlerindeki silik yardımcı metin rengi.
+* **#c0b7a6**: Popüler aramalar yanındaki ayırıcı çizgi ve noktalar.
+
+### Cam Efekti (Glassmorphism) ve Gölgeler
+* **Beyaz/Krem Cam:** rgba(255,253,248, 0.92) ile 0.45 arası değişen opaklıklarla arama çubuğu ve kategori kartlarının zeminleri.
+* **Mavi Cam/Gölge:** rgba(6,40,58, 0.58) CTA banner'ının ana zemini ve rgba(6,40,58, 0.28) ile 0.10 arası değerler kartların altındaki o derin, yumuşak gölgeler.
