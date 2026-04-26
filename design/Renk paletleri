@@ -7,10 +7,10 @@
 
 ### Marka ve Vurgu Renkleri (Accent Colors)
 * **#06283a** (Derin Lacivert): Sitenin ana karakteristiğini oluşturan renk. Büyük başlıklar, giriş yap butonu, aktif arama çubuğu çerçevesi ve sıralama numaralarının arka planında kullanılıyor.
-* **#006392** (Akademik Mavi): Sitenin "aksiyon" rengi. KTÜ amblemi, metin içi vurgular (birlikte yazısı), buton hover efektleri ve linkler bu renkte.
-* **#C8941A** (Antik Altın): Yıldız değerlendirmeleri (StarRating) ve "Bu Hafta Trend" kısmındaki alev ikonu için kullanılan şık altın/hardal tonu.
-* **#f0c875** (Açık Altın/Sarı): Sadece CTA banner'ının içindeki vurgusunda parlayan açık sarı.
-* **#2f8c4f** (Sakin Yeşil): Hocaların trend artış oranlarında ve ok ikonlarında kullanılan güven verici yeşil.
+* **#006392** (Akademik Mavi): Sitenin "aksiyon" rengi. KTÜ amblemi, metin içi vurgular, buton hover efektleri ve linkler bu renkte.
+* **#C8941A** (Antik Altın): Yıldız değerlendirmeleri (StarRating) ve "Bu Hafta Trend" kısmındaki alev ikonu için kullanılan ton.
+* **#f0c875** (Açık Altın/Sarı): Sadece CTA banner'ının içindeki vurgusunda açık sarı.
+* **#2f8c4f** (Sakin Yeşil): Hocaların trend artış oranlarında ve ok ikonlarında kullanılan yeşil.
 
 ### Metin ve Tipografi Tonları
 * **#2a2520** (Koyu Kahve/Siyah): Genel gövde metinleri ve elle çizilmiş gibi duran SVG ikonlarının (kep, hoca, harita) çizgi rengi.
