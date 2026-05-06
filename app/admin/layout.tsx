@@ -30,15 +30,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <LayoutDashboard size={20} className="text-[#3b82f6]" />
             Genel Bakış
           </Link>
-          <Link href="#" className="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-[#112a46] hover:bg-slate-50 rounded-xl font-medium transition-colors">
+          <Link href="/admin/users" className="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-[#112a46] hover:bg-slate-50 rounded-xl font-medium transition-colors">
             <Users size={20} />
             Kullanıcı Yönetimi
           </Link>
-          <Link href="#" className="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-[#112a46] hover:bg-slate-50 rounded-xl font-medium transition-colors">
+          
+          {/* Akademisyenler Linki DüZELTİLDİ */}
+          <Link href="/admin/instructors" className="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-[#112a46] hover:bg-slate-50 rounded-xl font-medium transition-colors">
             <GraduationCap size={20} />
             Akademisyenler
           </Link>
-          <Link href="#" className="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-[#112a46] hover:bg-slate-50 rounded-xl font-medium transition-colors">
+          
+          {/* Ders Katalogları Linki DÜZELTİLDİ (Şimdilik /admin/courses yaptık) */}
+          <Link href="/admin/courses" className="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-[#112a46] hover:bg-slate-50 rounded-xl font-medium transition-colors">
             <BookOpen size={20} />
             Ders Katalogları
           </Link>
