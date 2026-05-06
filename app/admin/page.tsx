@@ -3,10 +3,9 @@ import { Users, Flag, MessageSquare, BookCheck, ArrowRight, BarChart3 } from "lu
 export default function AdminDashboard() {
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
-      {/* Üst Başlık */}
       <div>
-        <h1 className="text-4xl font-bold text-[#112a46] font-serif">Sisteme Genel Bakış</h1>
-        <p className="text-slate-500 mt-2 text-lg">KampusKarne platformunun anlık istatistikleri ve bekleyen işlemler.</p>
+        <h1 className="text-4xl font-bold text-[#112a46] dark:text-white font-serif">Sisteme Genel Bakış</h1>
+        <p className="text-slate-500 dark:text-zinc-400 mt-2 text-lg">KampusKarne platformunun anlık istatistikleri ve bekleyen işlemler.</p>
       </div>
 
       {/* İstatistik Kartları */}
@@ -27,8 +26,7 @@ export default function AdminDashboard() {
           title="Bekleyen Şikayetler" 
           value="14" 
           icon={<Flag className="text-red-500" size={28} />} 
-          trend="" // Yazı kaldırıldı
-          alert
+          trend="İnceleme bekliyor" 
         />
         <StatsCard 
           title="Yeni Öneriler" 
@@ -38,144 +36,82 @@ export default function AdminDashboard() {
         />
       </div>
 
-      {/* İki Kolonlu İçerik Alanı */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
-        
-        {/* Sol Kolon: Son Aktiviteler Tablosu */}
-        <div className="lg:col-span-2 bg-white border border-slate-100 rounded-3xl shadow-sm overflow-hidden flex flex-col">
-          <div className="p-6 border-b border-slate-50 flex justify-between items-center">
-            <h2 className="text-xl font-bold text-[#112a46] font-serif">Son Bekleyen İşlemler</h2>
+        {/* Son Bekleyen İşlemler Tablosu */}
+        <div className="lg:col-span-2 bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 rounded-3xl shadow-sm overflow-hidden flex flex-col transition-colors duration-500">
+          <div className="p-6 border-b border-slate-50 dark:border-zinc-800 flex justify-between items-center">
+            <h2 className="text-xl font-bold text-[#112a46] dark:text-white font-serif">Son Bekleyen İşlemler</h2>
             <button className="text-sm font-medium text-[#3b82f6] flex items-center gap-1 hover:underline">
               Tümünü Gör <ArrowRight size={16} />
             </button>
           </div>
-          <div className="overflow-x-auto flex-1">
+          <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50/50 text-slate-500">
+              <thead className="bg-slate-50/50 dark:bg-zinc-800/50 text-slate-500 dark:text-zinc-400">
                 <tr>
-                  <th className="px-6 py-4 font-medium">TÜR</th>
-                  <th className="px-6 py-4 font-medium">DETAY</th>
-                  <th className="px-6 py-4 font-medium">TARİH</th>
-                  <th className="px-6 py-4 font-medium">DURUM</th>
-                  <th className="px-6 py-4 font-medium text-right">İŞLEM</th>
+                  <th className="px-6 py-4 font-medium uppercase tracking-wider text-xs">Tür</th>
+                  <th className="px-6 py-4 font-medium uppercase tracking-wider text-xs">Detay</th>
+                  <th className="px-6 py-4 font-medium uppercase tracking-wider text-xs">Tarih</th>
+                  <th className="px-6 py-4 font-medium uppercase tracking-wider text-xs text-right">İşlem</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-50">
-                {/* Şikayet Satırı */}
-                <tr className="hover:bg-slate-50/80 transition-colors group">
-                  <td className="px-6 py-5">
-                    <span className="px-3 py-1 bg-red-50 text-red-600 rounded-lg text-xs font-bold tracking-wide">ŞİKAYET</span>
-                  </td>
-                  <td className="px-6 py-5">
-                    <p className="text-[#112a46] font-medium">Uygunsuz dil kullanımı tespiti</p>
-                    <p className="text-slate-400 text-xs mt-0.5">Yorum ID: #RV-842</p>
-                  </td>
-                  <td className="px-6 py-5 text-slate-500">2 saat önce</td>
-                  <td className="px-6 py-5">
-                    <span className="flex items-center gap-1.5 text-[#c28f2c] font-medium">
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#c28f2c]"></div> Bekliyor
-                    </span>
-                  </td>
-                  <td className="px-6 py-5 text-right">
-                    <button className="px-4 py-2 bg-slate-100 text-[#112a46] hover:bg-slate-200 rounded-lg font-medium transition-colors">
-                      İncele
-                    </button>
-                  </td>
-                </tr>
-                {/* Öneri Satırı */}
-                <tr className="hover:bg-slate-50/80 transition-colors group">
-                  <td className="px-6 py-5">
-                    <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg text-xs font-bold tracking-wide">ÖNERİ</span>
-                  </td>
-                  <td className="px-6 py-5">
-                    <p className="text-[#112a46] font-medium">Yeni Hoca Ekleme Talebi</p>
-                    <p className="text-slate-400 text-xs mt-0.5">Dr. Ahmet Yılmaz - Bilgisayar Müh.</p>
-                  </td>
-                  <td className="px-6 py-5 text-slate-500">5 saat önce</td>
-                  <td className="px-6 py-5">
-                    <span className="flex items-center gap-1.5 text-[#c28f2c] font-medium">
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#c28f2c]"></div> Bekliyor
-                    </span>
-                  </td>
-                  <td className="px-6 py-5 text-right">
-                    <button className="px-4 py-2 bg-slate-100 text-[#112a46] hover:bg-slate-200 rounded-lg font-medium transition-colors">
-                      İncele
-                    </button>
-                  </td>
-                </tr>
+              <tbody className="divide-y divide-slate-50 dark:divide-zinc-800">
+                {[
+                  { type: 'ŞİKAYET', detail: 'Uygunsuz dil kullanımı tespiti', date: '2 saat önce', color: 'text-red-500 bg-red-50 dark:bg-red-900/20' },
+                  { type: 'ÖNERİ', detail: 'Yeni Hoca Ekleme Talebi', date: '5 saat önce', color: 'text-blue-500 bg-blue-50 dark:bg-blue-900/20' }
+                ].map((row, i) => (
+                  <tr key={i} className="hover:bg-slate-50/80 dark:hover:bg-zinc-800/80 transition-colors">
+                    <td className="px-6 py-5">
+                      <span className={`px-3 py-1 rounded-lg text-[10px] font-bold tracking-widest ${row.color}`}>{row.type}</span>
+                    </td>
+                    <td className="px-6 py-5">
+                      <p className="text-[#112a46] dark:text-zinc-200 font-medium">{row.detail}</p>
+                    </td>
+                    <td className="px-6 py-5 text-slate-500 dark:text-zinc-400">{row.date}</td>
+                    <td className="px-6 py-5 text-right">
+                      <button className="px-4 py-2 bg-slate-100 dark:bg-zinc-800 text-[#112a46] dark:text-white hover:bg-slate-200 dark:hover:bg-zinc-700 rounded-lg font-bold text-xs transition-colors">İncele</button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
         </div>
 
-        {/* Sağ Kolon: Tailwind ile Tasarlanmış CSS Bar Grafik */}
-        <div className="bg-white border border-slate-100 rounded-3xl shadow-sm p-7 flex flex-col">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-xl font-bold text-[#112a46] font-serif">Haftalık Etkileşim</h3>
-            <div className="p-2 bg-slate-50 rounded-xl">
-              <BarChart3 size={20} className="text-slate-400" />
-            </div>
+        {/* Haftalık Etkileşim Grafiği */}
+        <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 rounded-3xl shadow-sm p-7 flex flex-col transition-colors duration-500">
+          <h3 className="text-xl font-bold text-[#112a46] dark:text-white font-serif mb-6">Haftalık Etkileşim</h3>
+          <div className="flex-1 flex items-end justify-between gap-2 h-40">
+            {[40, 65, 45, 85, 55, 30, 45].map((h, i) => (
+              <div key={i} className="flex flex-col items-center w-full gap-2 group">
+                <div className={`w-full max-w-[32px] rounded-t-md transition-all duration-300 ${i === 3 ? 'bg-[#3b82f6]' : 'bg-slate-100 dark:bg-zinc-800 group-hover:bg-blue-100 dark:group-hover:bg-zinc-700'}`} style={{ height: `${h}%` }}></div>
+                <span className="text-[10px] font-bold text-slate-400 uppercase">{['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'][i]}</span>
+              </div>
+            ))}
           </div>
-
-          {/* Tailwind CSS Grafik Alanı */}
-          <div className="flex-1 flex flex-col justify-end mt-4">
-            <div className="flex items-end justify-between gap-2 h-40">
-              {[
-                { day: 'Pzt', h: 'h-[40%]' },
-                { day: 'Sal', h: 'h-[65%]' },
-                { day: 'Çar', h: 'h-[45%]' },
-                { day: 'Per', h: 'h-[85%]', active: true },
-                { day: 'Cum', h: 'h-[55%]' },
-                { day: 'Cmt', h: 'h-[30%]' },
-                { day: 'Paz', h: 'h-[45%]' },
-              ].map((item, i) => (
-                <div key={i} className="flex flex-col items-center w-full gap-3 group cursor-pointer">
-                  {/* Bar */}
-                  <div className={`w-full max-w-[32px] rounded-t-md transition-all duration-300 ${item.active ? 'bg-[#3b82f6]' : 'bg-slate-100 group-hover:bg-blue-100'} ${item.h}`}></div>
-                  {/* Etiket */}
-                  <span className={`text-[11px] font-bold tracking-wide ${item.active ? 'text-[#112a46]' : 'text-slate-400'}`}>
-                    {item.day}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Grafik Altı Özet Bilgiler */}
-          <div className="mt-8 pt-6 border-t border-slate-50 flex items-center justify-between">
+          <div className="mt-8 pt-6 border-t border-slate-50 dark:border-zinc-800 flex items-center justify-between">
             <div>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Toplam Ziyaret</p>
-              <p className="text-2xl font-bold text-[#112a46]">12,450</p>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Toplam Ziyaret</p>
+              <p className="text-2xl font-bold text-[#112a46] dark:text-white">12,450</p>
             </div>
             <div className="text-right">
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Yeni Yorum</p>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Yeni Yorum</p>
               <p className="text-2xl font-bold text-emerald-500">+342</p>
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );
 }
 
-// Kart Bileşeni
-function StatsCard({ title, value, icon, trend, alert }: { title: string, value: string, icon: React.ReactNode, trend: string, alert?: boolean }) {
+function StatsCard({ title, value, icon, trend }: { title: string, value: string, icon: React.ReactNode, trend: string }) {
   return (
-    <div className={`bg-white p-6 rounded-3xl border ${alert ? 'border-red-100' : 'border-slate-100'} shadow-sm flex flex-col relative overflow-hidden group hover:shadow-md transition-shadow`}>
-      <div className="flex justify-between items-start mb-4">
-        <div className={`p-3 rounded-2xl ${alert ? 'bg-red-50' : 'bg-slate-50'}`}>
-          {icon}
-        </div>
-      </div>
-      <div>
-        <h4 className="text-4xl font-bold text-[#112a46] tracking-tight">{value}</h4>
-        <h3 className="text-sm font-semibold text-slate-500 mt-2">{title}</h3>
-        {/* Trend boş gönderilirse hiç render edilmeyecek, böylece boşluk oluşmayacak */}
-        {trend && (
-          <p className={`text-xs mt-3 font-medium ${alert ? 'text-red-500' : 'text-slate-400'}`}>{trend}</p>
-        )}
-      </div>
+    <div className="bg-white dark:bg-zinc-900 p-6 rounded-3xl border border-slate-100 dark:border-zinc-800 shadow-sm flex flex-col group hover:shadow-md transition-all duration-500">
+      <div className="p-3 w-fit rounded-2xl bg-slate-50 dark:bg-zinc-800 transition-colors mb-4">{icon}</div>
+      <h4 className="text-4xl font-bold text-[#112a46] dark:text-white tracking-tight">{value}</h4>
+      <h3 className="text-sm font-semibold text-slate-500 dark:text-zinc-400 mt-2">{title}</h3>
+      <p className="text-xs mt-3 font-medium text-slate-400 dark:text-zinc-500">{trend}</p>
     </div>
   );
 }

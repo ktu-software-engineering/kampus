@@ -1,144 +1,84 @@
 import { Search, Filter, UserPlus, Shield, User, GraduationCap, Ban, Edit, Trash2 } from "lucide-react";
 
-// Şimdilik arayüzde görmek için sahte (mock) kullanıcı verileri
 const mockUsers = [
-  {
-    id: "USR-1042",
-    name: "İbrahim Doğan",
-    email: "ibrahim.d@ktu.edu.tr",
-    role: "admin",
-    joinDate: "12 Ekim 2025",
-    status: "active",
-  },
-  {
-    id: "USR-1043",
-    name: "Anonim Öğrenci",
-    email: "ahmet.y@ktu.edu.tr",
-    role: "student",
-    joinDate: "3 gün önce",
-    status: "active",
-  },
-  {
-    id: "USR-1044",
-    name: "Dr. Ayşe Yılmaz",
-    email: "ayse.yilmaz@ktu.edu.tr",
-    role: "professor",
-    joinDate: "1 hafta önce",
-    status: "active",
-  },
-  {
-    id: "USR-1045",
-    name: "Anonim Öğrenci",
-    email: "mehmet.k@ktu.edu.tr",
-    role: "student",
-    joinDate: "2 ay önce",
-    status: "banned",
-  },
+  { id: "USR-1042", name: "İbrahim Doğan", email: "ibrahim.d@ktu.edu.tr", role: "admin", joinDate: "12 Ekim 2025", status: "active" },
+  { id: "USR-1043", name: "Ahmet Yılmaz", email: "ahmet.y@ktu.edu.tr", role: "student", joinDate: "3 gün önce", status: "active" },
+  { id: "USR-1044", name: "Dr. Ayşe Yılmaz", email: "ayse.yilmaz@ktu.edu.tr", role: "professor", joinDate: "1 hafta önce", status: "active" },
+  { id: "USR-1045", name: "Mehmet Kaya", email: "mehmet.k@ktu.edu.tr", role: "student", joinDate: "2 ay önce", status: "banned" },
 ];
 
 export default function UsersPage() {
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
-      {/* Üst Başlık ve Aksiyonlar */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#112a46] font-serif">Kullanıcı Yönetimi</h1>
-          <p className="text-slate-500 mt-1">Sistemdeki tüm öğrencileri, hocaları ve yöneticileri kontrol edin.</p>
+          <h1 className="text-3xl font-bold text-[#112a46] dark:text-white font-serif">Kullanıcı Yönetimi</h1>
+          <p className="text-slate-500 dark:text-zinc-400 mt-1 text-lg">Sistemdeki tüm öğrencileri, hocaları ve yöneticileri kontrol edin.</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2.5 bg-[#112a46] text-white rounded-xl text-sm font-medium hover:bg-[#1a3a5f] transition-colors shadow-sm">
-          <UserPlus size={18} />
-          Kullanıcı Davet Et
+        <button className="flex items-center gap-2 px-5 py-3 bg-[#112a46] dark:bg-zinc-800 text-white rounded-2xl text-sm font-bold hover:scale-[1.02] transition-all shadow-lg active:scale-95">
+          <UserPlus size={18} /> Kullanıcı Davet Et
         </button>
       </div>
 
-      {/* Arama ve Filtreleme Çubuğu */}
       <div className="flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+        <div className="relative flex-1 group">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#3b82f6] transition-colors" size={20} />
           <input 
             type="text" 
             placeholder="İsim, e-posta veya ID ile ara..." 
-            className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3b82f6]/50 focus:border-[#3b82f6] transition-all"
+            className="w-full pl-12 pr-4 py-3 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl text-sm text-[#112a46] dark:text-white focus:outline-none focus:ring-4 focus:ring-[#3b82f6]/10 focus:border-[#3b82f6] transition-all" 
           />
         </div>
-        <div className="flex gap-2">
-          <select className="px-4 py-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#3b82f6]/50">
-            <option>Tüm Roller</option>
-            <option>Öğrenciler</option>
-            <option>Profesörler</option>
-            <option>Yöneticiler</option>
-          </select>
-          <button className="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl text-sm font-medium hover:bg-slate-50 transition-colors">
-            <Filter size={18} />
-            Filtrele
-          </button>
-        </div>
+        <button className="flex items-center gap-2 px-5 py-3 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 rounded-2xl text-sm font-bold hover:bg-slate-50 dark:hover:bg-zinc-800 transition-colors">
+          <Filter size={18} /> Filtrele
+        </button>
       </div>
 
-      {/* Kullanıcılar Tablosu */}
-      <div className="bg-white border border-slate-100 rounded-3xl shadow-sm overflow-hidden">
+      <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 rounded-[2.5rem] shadow-sm overflow-hidden transition-all duration-500">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="bg-slate-50/80 text-slate-500 border-b border-slate-100">
+            <thead className="bg-slate-50/80 dark:bg-zinc-800/50 text-slate-500 dark:text-zinc-400 border-b border-slate-100 dark:border-zinc-800">
               <tr>
-                <th className="px-6 py-4 font-medium">KULLANICI BİLGİSİ</th>
-                <th className="px-6 py-4 font-medium">ROL</th>
-                <th className="px-6 py-4 font-medium">KAYIT TARİHİ</th>
-                <th className="px-6 py-4 font-medium">DURUM</th>
-                <th className="px-6 py-4 font-medium text-right">İŞLEMLER</th>
+                <th className="px-8 py-5 font-bold uppercase tracking-wider text-[10px]">Kullanıcı Bilgisi</th>
+                <th className="px-8 py-5 font-bold uppercase tracking-wider text-[10px]">Rol</th>
+                <th className="px-8 py-5 font-bold uppercase tracking-wider text-[10px]">Kayıt Tarihi</th>
+                <th className="px-8 py-5 font-bold uppercase tracking-wider text-[10px]">Durum</th>
+                <th className="px-8 py-5 font-bold uppercase tracking-wider text-[10px] text-right">İşlemler</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y divide-slate-50 dark:divide-zinc-800">
               {mockUsers.map((user) => (
-                <tr key={user.id} className={`hover:bg-slate-50/50 transition-colors group ${user.status === 'banned' ? 'opacity-75' : ''}`}>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 overflow-hidden">
-                        {/* Baş harfi gösterme mantığı (basitçe) */}
-                        <span className="font-bold text-sm">{user.name.charAt(0)}</span>
+                <tr key={user.id} className={`hover:bg-slate-50/50 dark:hover:bg-zinc-800/50 transition-colors group ${user.status === 'banned' ? 'opacity-60 bg-red-50/10' : ''}`}>
+                  <td className="px-8 py-6">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-zinc-800 flex items-center justify-center text-[#112a46] dark:text-white font-black text-lg shadow-inner">
+                        {user.name.charAt(0)}
                       </div>
                       <div>
-                        <p className="text-[#112a46] font-bold">{user.name}</p>
-                        <p className="text-slate-500 text-xs">{user.email}</p>
+                        <p className="text-[#112a46] dark:text-zinc-200 font-bold text-base">{user.name}</p>
+                        <p className="text-slate-400 dark:text-zinc-500 text-xs font-medium">{user.email}</p>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-8 py-6">
                     <RoleBadge role={user.role} />
                   </td>
-                  <td className="px-6 py-4 text-slate-500 font-medium">
-                    {user.joinDate}
-                  </td>
-                  <td className="px-6 py-4">
+                  <td className="px-8 py-6 text-slate-500 dark:text-zinc-400 font-semibold">{user.joinDate}</td>
+                  <td className="px-8 py-6">
                     {user.status === 'active' ? (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold tracking-wide">
-                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-                        AKTİF
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 text-[10px] font-black tracking-widest uppercase">
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div> Aktif
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-50 text-red-700 text-xs font-bold tracking-wide">
-                        <Ban size={12} />
-                        YASAKLI
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 text-[10px] font-black tracking-widest uppercase">
+                        <Ban size={12} /> Yasaklı
                       </span>
                     )}
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button title="Rolü Düzenle" className="p-2 text-slate-600 bg-slate-50 hover:bg-slate-100 hover:text-[#3b82f6] rounded-lg transition-colors">
-                        <Edit size={18} />
-                      </button>
-                      {user.status === 'active' ? (
-                        <button title="Kullanıcıyı Yasakla" className="p-2 text-slate-600 bg-slate-50 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors">
-                          <Ban size={18} />
-                        </button>
-                      ) : (
-                        <button title="Yasağı Kaldır" className="p-2 text-slate-600 bg-slate-50 hover:bg-emerald-50 hover:text-emerald-600 rounded-lg transition-colors">
-                          <Shield size={18} />
-                        </button>
-                      )}
-                      <button title="Hesabı Sil" className="p-2 text-slate-600 bg-slate-50 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors">
-                        <Trash2 size={18} />
-                      </button>
+                  <td className="px-8 py-6 text-right">
+                    <div className="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
+                      <button title="Düzenle" className="p-3 text-slate-600 dark:text-zinc-400 bg-slate-50 dark:bg-zinc-800 rounded-xl hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all shadow-sm"><Edit size={18} /></button>
+                      <button title="Sil" className="p-3 text-slate-600 dark:text-zinc-400 bg-slate-50 dark:bg-zinc-800 rounded-xl hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all shadow-sm"><Trash2 size={18} /></button>
                     </div>
                   </td>
                 </tr>
@@ -146,14 +86,14 @@ export default function UsersPage() {
             </tbody>
           </table>
         </div>
-        
-        {/* Pagination */}
-        <div className="p-4 border-t border-slate-50 flex items-center justify-between text-sm text-slate-500">
-          <span>Toplam 4 kullanıcı gösteriliyor</span>
-          <div className="flex gap-1">
-            <button className="px-3 py-1 border border-slate-200 rounded-md hover:bg-slate-50" disabled>Önceki</button>
-            <button className="px-3 py-1 border border-slate-200 bg-slate-50 rounded-md font-medium text-[#112a46]">1</button>
-            <button className="px-3 py-1 border border-slate-200 rounded-md hover:bg-slate-50">Sonraki</button>
+        <div className="p-6 border-t border-slate-50 dark:border-zinc-800 flex items-center justify-between text-sm text-slate-500 dark:text-zinc-500 bg-slate-50/30 dark:bg-zinc-800/30">
+          <span className="font-medium tracking-tight">Toplam {mockUsers.length} kayıt arasından 1-4 arası gösteriliyor</span>
+          <div className="flex gap-2">
+            <button className="px-6 py-2.5 border border-slate-200 dark:border-zinc-800 rounded-xl hover:bg-white dark:hover:bg-zinc-900 transition-all disabled:opacity-30 font-bold" disabled>Geri</button>
+            <div className="flex items-center">
+               <button className="w-10 h-10 bg-[#112a46] dark:bg-[#3b82f6] text-white rounded-xl font-black shadow-lg shadow-blue-500/20">1</button>
+            </div>
+            <button className="px-6 py-2.5 border border-slate-200 dark:border-zinc-800 rounded-xl hover:bg-white dark:hover:bg-zinc-900 transition-all font-bold">İleri</button>
           </div>
         </div>
       </div>
@@ -161,28 +101,15 @@ export default function UsersPage() {
   );
 }
 
-// Rol rozetleri
 function RoleBadge({ role }: { role: string }) {
-  switch (role) {
-    case 'admin':
-      return (
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-50 text-purple-700 rounded-lg text-xs font-bold tracking-wide">
-          <Shield size={14} /> YÖNETİCİ
-        </span>
-      );
-    case 'professor':
-      return (
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-700 rounded-lg text-xs font-bold tracking-wide">
-          <GraduationCap size={14} /> PROFESÖR
-        </span>
-      );
-    case 'student':
-      return (
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-xs font-bold tracking-wide">
-          <User size={14} /> ÖĞRENCİ
-        </span>
-      );
-    default:
-      return null;
-  }
+  const config: any = {
+    admin: { icon: <Shield size={14} />, class: "bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400" },
+    professor: { icon: <GraduationCap size={14} />, class: "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400" },
+    student: { icon: <User size={14} />, class: "bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400" },
+  };
+  return (
+    <span className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-xl text-[10px] font-black tracking-[0.1em] shadow-sm ${config[role].class}`}>
+      {config[role].icon} {role.toUpperCase()}
+    </span>
+  );
 }
