@@ -43,15 +43,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             Ders Katalogları
           </Link>
 
-          <p className="px-4 text-xs font-medium text-slate-400 uppercase tracking-wider mb-2 mt-8">İşlem Sırası</p>
-          <Link href="#" className="flex items-center justify-between px-4 py-3 text-slate-500 hover:text-[#112a46] hover:bg-slate-50 rounded-xl font-medium transition-colors">
+        <p className="px-4 text-xs font-medium text-slate-400 uppercase tracking-wider mb-2 mt-8">İşlem Sırası</p>
+          
+          {/* Şikayetler Linki */}
+          <Link href="/admin/reports" className="flex items-center justify-between px-4 py-3 text-slate-500 hover:text-[#112a46] hover:bg-slate-50 rounded-xl font-medium transition-colors">
             <div className="flex items-center gap-3">
               <Flag size={20} />
               Şikayetler
             </div>
             <span className="bg-red-100 text-red-600 py-0.5 px-2 rounded-full text-xs font-bold">14</span>
           </Link>
-          <Link href="#" className="flex items-center justify-between px-4 py-3 text-slate-500 hover:text-[#112a46] hover:bg-slate-50 rounded-xl font-medium transition-colors">
+          
+          {/* Öneriler Linki */}
+          <Link href="/admin/suggestions" className="flex items-center justify-between px-4 py-3 text-slate-500 hover:text-[#112a46] hover:bg-slate-50 rounded-xl font-medium transition-colors">
             <div className="flex items-center gap-3">
               <MessageSquare size={20} />
               Öneriler
@@ -59,7 +63,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <span className="bg-[#c28f2c]/10 text-[#c28f2c] py-0.5 px-2 rounded-full text-xs font-bold">8</span>
           </Link>
         </nav>
-
         <div className="p-4 border-t border-slate-100">
           <Link href="#" className="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-[#112a46] hover:bg-slate-50 rounded-xl font-medium transition-colors mb-1">
             <Settings size={20} />
