@@ -47,3 +47,4 @@ next-env.d.ts
 
 # Yerel tasarım notları ve spec dosyaları — sadece yerel kalır
 /docs/
+GEMINI.md

@@ -4,7 +4,11 @@ import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 
-export default function ThemeToggle() {
+interface ThemeToggleProps {
+  variant?: "fixed" | "inline";
+}
+
+export default function ThemeToggle({ variant = "fixed" }: ThemeToggleProps) {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -17,28 +21,23 @@ export default function ThemeToggle() {
     const isDark = resolvedTheme === "dark";
     const nextTheme = isDark ? "light" : "dark";
 
-    // Tarayıcı View Transitions API desteklemiyorsa normal değiştir (Örn: Eski Firefox'lar)
     if (!document.startViewTransition) {
       setTheme(nextTheme);
       return;
     }
 
-    // Tıklanan noktanın (butonun) X ve Y koordinatlarını al
     const x = e.clientX;
     const y = e.clientY;
     
-    // Tıklanan noktadan ekranın en uzak köşesine olan yarıçapı hesapla
     const endRadius = Math.hypot(
       Math.max(x, window.innerWidth - x),
       Math.max(y, window.innerHeight - y)
     );
 
-    // Temayı değiştiren View Transition'ı başlat
     const transition = document.startViewTransition(() => {
       setTheme(nextTheme);
     });
 
-    // Tema değiştikten hemen sonra CSS clip-path (daire kırpma) animasyonunu tetikle
     transition.ready.then(() => {
       const clipPath = [
         `circle(0px at ${x}px ${y}px)`,
@@ -50,7 +49,7 @@ export default function ThemeToggle() {
           clipPath: isDark ? [...clipPath].reverse() : clipPath,
         },
         {
-          duration: 500, // Yayılma hızı (milisaniye)
+          duration: 500,
           easing: "ease-in-out",
           pseudoElement: isDark
             ? "::view-transition-old(root)"
@@ -60,10 +59,32 @@ export default function ThemeToggle() {
     });
   };
 
+  if (variant === "inline") {
+    return (
+      <button
+        onClick={toggleTheme}
+        className="flex items-center gap-3 px-4 py-3 w-full text-slate-500 dark:text-zinc-400 hover:text-[#112a46] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-800 rounded font-medium transition-colors group"
+        aria-label="Temayı Değiştir"
+      >
+        {resolvedTheme === "dark" ? (
+          <>
+            <Sun size={20} className="text-amber-500 group-hover:rotate-45 transition-transform duration-500" />
+            <span>Açık Mod</span>
+          </>
+        ) : (
+          <>
+            <Moon size={20} className="text-[#112a46] dark:text-slate-400 group-hover:-rotate-12 transition-transform duration-500" />
+            <span>Koyu Mod</span>
+          </>
+        )}
+      </button>
+    );
+  }
+
   return (
     <button
       onClick={toggleTheme}
-      className="fixed top-6 right-8 z-50 p-3 rounded-full bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 shadow-sm hover:shadow-md transition-all group"
+      className="fixed top-6 right-8 z-50 p-3 rounded bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 shadow-sm hover:shadow-md transition-all group"
       aria-label="Temayı Değiştir"
     >
       {resolvedTheme === "dark" ? (
