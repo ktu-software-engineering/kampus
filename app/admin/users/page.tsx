@@ -12,10 +12,10 @@ export default function UsersPage() {
     <div className="space-y-10 animate-in fade-in duration-500">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 border-b border-slate-200 dark:border-zinc-800 pb-8">
         <div>
-          <h1 className="text-2xl font-black text-[#112a46] dark:text-white uppercase tracking-tighter">Kullanıcı Veritabanı</h1>
-          <p className="text-slate-500 dark:text-zinc-400 mt-1 text-sm font-medium">Sistemdeki tüm kullanıcı rollerinin ve erişim yetkilerinin yönetimi.</p>
+          <h1 className="text-2xl font-black text-kk-blue dark:text-white uppercase tracking-tighter">Kullanıcı Veritabanı</h1>
+          <p className="text-kk-text-muted dark:text-zinc-400 mt-1 text-sm font-medium">Sistemdeki tüm kullanıcı rollerinin ve erişim yetkilerinin yönetimi.</p>
         </div>
-        <button className="flex items-center gap-2 px-6 py-3 bg-[#112a46] dark:bg-zinc-100 text-white dark:text-[#112a46] rounded font-black text-xs uppercase tracking-[0.15em] hover:bg-opacity-90 active:scale-95 transition-all shadow-sm">
+        <button className="flex items-center gap-2 px-6 py-3 bg-kk-blue dark:bg-zinc-100 text-white dark:text-kk-blue rounded font-black text-xs uppercase tracking-[0.15em] hover:bg-opacity-90 active:scale-95 transition-all shadow-sm">
           <UserPlus size={16} strokeWidth={3} /> Kullanıcı Davet Et
         </button>
       </div>
@@ -26,7 +26,7 @@ export default function UsersPage() {
           <input 
             type="text" 
             placeholder="İSİM, E-POSTA VEYA KULLANICI ID İLE ARA..." 
-            className="w-full pl-12 pr-4 py-3.5 bg-white dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded text-xs font-bold text-[#112a46] dark:text-white uppercase tracking-wider focus:outline-none focus:ring-1 focus:ring-[#112a46] transition-all" 
+            className="w-full pl-12 pr-4 py-3.5 bg-white dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded text-xs font-bold text-kk-blue dark:text-white uppercase tracking-wider focus:outline-none focus:ring-1 focus:ring-kk-blue transition-all" 
           />
         </div>
         <button className="flex items-center gap-2 px-6 py-3.5 bg-white dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 rounded text-xs font-bold uppercase tracking-widest hover:bg-slate-50 transition-colors">
@@ -51,19 +51,19 @@ export default function UsersPage() {
                 <tr key={user.id} className={`hover:bg-slate-50/30 dark:hover:bg-zinc-800/20 transition-colors group ${user.status === 'banned' ? 'opacity-60 bg-red-50/5 dark:bg-red-900/5' : ''}`}>
                   <td className="px-8 py-6">
                     <div className="flex items-center gap-5">
-                      <div className="w-11 h-11 rounded bg-slate-100 dark:bg-zinc-800 flex items-center justify-center text-[#112a46] dark:text-white font-black text-sm border border-slate-200 dark:border-zinc-700">
+                      <div className="w-11 h-11 rounded bg-kk-beige-dark dark:bg-zinc-800 flex items-center justify-center text-kk-blue dark:text-white font-black text-sm border border-kk-blue/5 dark:border-zinc-700">
                         {user.name.charAt(0)}
                       </div>
                       <div>
-                        <p className="text-[#112a46] dark:text-zinc-200 font-bold text-sm uppercase tracking-tight">{user.name}</p>
-                        <p className="text-slate-400 dark:text-zinc-500 text-[10px] font-black tracking-widest uppercase">{user.email}</p>
+                        <p className="text-kk-blue dark:text-zinc-200 font-bold text-sm uppercase tracking-tight">{user.name}</p>
+                        <p className="text-kk-text-muted dark:text-zinc-500 text-[10px] font-black tracking-widest uppercase">{user.email}</p>
                       </div>
                     </div>
                   </td>
                   <td className="px-8 py-6">
-                    <RoleBadge role={user.role} />
+                    <RoleBadge role={user.role as keyof typeof roleConfig} />
                   </td>
-                  <td className="px-8 py-6 text-slate-600 dark:text-zinc-400 font-bold text-xs uppercase tracking-tighter">{user.joinDate}</td>
+                  <td className="px-8 py-6 text-kk-text-muted dark:text-zinc-400 font-bold text-xs uppercase tracking-tighter">{user.joinDate}</td>
                   <td className="px-8 py-6">
                     {user.status === 'active' ? (
                       <span className="inline-flex items-center gap-1.5 px-2.5 py-1 border border-emerald-100 dark:border-emerald-900/30 bg-emerald-50/50 dark:bg-emerald-900/10 text-emerald-700 dark:text-emerald-400 text-[9px] font-black uppercase tracking-widest rounded-sm">
@@ -77,7 +77,7 @@ export default function UsersPage() {
                   </td>
                   <td className="px-8 py-6 text-right">
                     <div className="flex justify-end gap-2">
-                      <button title="Düzenle" className="p-2.5 text-slate-400 dark:text-zinc-600 border border-slate-100 dark:border-zinc-800 rounded hover:text-[#112a46] dark:hover:text-white hover:border-[#112a46] transition-all"><Edit size={16} /></button>
+                      <button title="Düzenle" className="p-2.5 text-slate-400 dark:text-zinc-600 border border-slate-100 dark:border-zinc-800 rounded hover:text-kk-blue dark:hover:text-white hover:border-kk-blue transition-all"><Edit size={16} /></button>
                       <button title="Sil" className="p-2.5 text-slate-400 dark:text-zinc-600 border border-slate-100 dark:border-zinc-800 rounded hover:text-red-600 hover:border-red-600 transition-all"><Trash2 size={16} /></button>
                     </div>
                   </td>
@@ -90,7 +90,7 @@ export default function UsersPage() {
           <span className="font-black uppercase tracking-widest">Kayıt 1 - 4 (Toplam {mockUsers.length})</span>
           <div className="flex gap-1">
             <button className="px-4 py-2 border border-slate-200 dark:border-zinc-800 rounded text-[10px] font-black uppercase tracking-widest hover:bg-white transition-all disabled:opacity-30" disabled>Geri</button>
-            <button className="w-8 h-8 bg-[#112a46] dark:bg-zinc-100 text-white dark:text-[#112a46] rounded text-[10px] font-black">1</button>
+            <button className="w-8 h-8 bg-kk-blue dark:bg-zinc-100 text-white dark:text-kk-blue rounded text-[10px] font-black">1</button>
             <button className="px-4 py-2 border border-slate-200 dark:border-zinc-800 rounded text-[10px] font-black uppercase tracking-widest hover:bg-white transition-all">İleri</button>
           </div>
         </div>
@@ -99,15 +99,17 @@ export default function UsersPage() {
   );
 }
 
-function RoleBadge({ role }: { role: string }) {
-  const config: any = {
-    admin: { icon: <Shield size={12} />, class: "border-purple-100 bg-purple-50 text-purple-700 dark:bg-purple-900/10 dark:border-purple-900/30 dark:text-purple-400" },
-    professor: { icon: <GraduationCap size={12} />, class: "border-blue-100 bg-blue-50 text-blue-700 dark:bg-blue-900/10 dark:border-blue-900/30 dark:text-blue-400" },
-    student: { icon: <User size={12} />, class: "border-slate-200 bg-slate-50 text-slate-600 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-400" },
-  };
+const roleConfig = {
+  admin: { icon: <Shield size={12} />, class: "border-purple-100 bg-purple-50 text-purple-700 dark:bg-purple-900/10 dark:border-purple-900/30 dark:text-purple-400" },
+  professor: { icon: <GraduationCap size={12} />, class: "border-blue-100 bg-blue-50 text-blue-700 dark:bg-blue-900/10 dark:border-blue-900/30 dark:text-blue-400" },
+  student: { icon: <User size={12} />, class: "border-slate-200 bg-slate-50 text-slate-600 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-400" },
+};
+
+function RoleBadge({ role }: { role: keyof typeof roleConfig }) {
+  const config = roleConfig[role];
   return (
-    <span className={`inline-flex items-center gap-1.5 px-3 py-1 border rounded text-[9px] font-black tracking-widest ${config[role].class}`}>
-      {config[role].icon} {role.toUpperCase()}
+    <span className={`inline-flex items-center gap-1.5 px-3 py-1 border rounded text-[9px] font-black tracking-widest ${config.class}`}>
+      {config.icon} {role.toUpperCase()}
     </span>
   );
 }

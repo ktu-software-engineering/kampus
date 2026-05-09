@@ -1,4 +1,4 @@
-import { AlertTriangle, CheckCircle, Eye, Trash2, Flag, MessageCircle } from "lucide-react";
+import { AlertTriangle, CheckCircle, Eye, Trash2 } from "lucide-react";
 
 const mockReports = [
   { id: "REP-842", course: "BIL204", comment: "Bu dersi veren hoca asla anlatamıyor, zaman kaybı...", reason: "Hakaret / Uygunsuz Dil", status: "pending", date: "2 saat önce" },
@@ -11,8 +11,8 @@ export default function ReportsPage() {
     <div className="space-y-10 animate-in fade-in duration-500">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 border-b border-slate-200 dark:border-zinc-800 pb-8">
         <div>
-          <h1 className="text-2xl font-black text-[#112a46] dark:text-white uppercase tracking-tighter">İçerik Moderasyonu</h1>
-          <p className="text-slate-500 dark:text-zinc-400 mt-1 text-sm font-medium">Sistem genelinde bildirilen ihlal ve uygunsuz içeriklerin denetim merkezi.</p>
+          <h1 className="text-2xl font-black text-kk-blue dark:text-white uppercase tracking-tighter">İçerik Moderasyonu</h1>
+          <p className="text-kk-text-muted dark:text-zinc-400 mt-1 text-sm font-medium">Sistem genelinde bildirilen ihlal ve uygunsuz içeriklerin denetim merkezi.</p>
         </div>
       </div>
 
@@ -34,7 +34,7 @@ export default function ReportsPage() {
                     <div className="flex flex-col gap-3">
                       <span className="text-[9px] font-black text-slate-400 tracking-[0.2em] uppercase">{report.id} • {report.course}</span>
                       <div className="relative p-5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 border-l-4 border-l-red-600 rounded-sm">
-                        <p className="text-[#112a46] dark:text-zinc-300 font-medium italic leading-relaxed text-sm">"{report.comment}"</p>
+                        <p className="text-kk-blue dark:text-zinc-300 font-medium italic leading-relaxed text-sm">&ldquo;{report.comment}&rdquo;</p>
                       </div>
                     </div>
                   </td>

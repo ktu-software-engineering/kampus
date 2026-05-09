@@ -1,4 +1,4 @@
-import { CheckCircle, XCircle, UserPlus, BookPlus, Search, PlusCircle, ArrowUpRight } from "lucide-react";
+import { CheckCircle, XCircle, UserPlus, BookPlus } from "lucide-react";
 
 const mockSuggestions = [
   { id: "SUG-102", type: "instructor", title: "Dr. Öğr. Üyesi Ayşe Yılmaz", details: "Yazılım Mühendisliği Fakültesi", submittedBy: "İbrahim D.", date: "1 saat önce" },
@@ -10,8 +10,8 @@ export default function SuggestionsPage() {
     <div className="space-y-10 animate-in fade-in duration-500">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 border-b border-slate-200 dark:border-zinc-800 pb-8">
         <div>
-          <h1 className="text-2xl font-black text-[#112a46] dark:text-white uppercase tracking-tighter">İçerik Genişletme</h1>
-          <p className="text-slate-500 dark:text-zinc-400 mt-1 text-sm font-medium">Kullanıcılar tarafından iletilen yeni hoca ve müfredat ekleme talepleri.</p>
+          <h1 className="text-2xl font-black text-kk-blue dark:text-white uppercase tracking-tighter">İçerik Genişletme</h1>
+          <p className="text-kk-text-muted dark:text-zinc-400 mt-1 text-sm font-medium">Kullanıcılar tarafından iletilen yeni hoca ve müfredat ekleme talepleri.</p>
         </div>
       </div>
 
@@ -42,8 +42,8 @@ export default function SuggestionsPage() {
                   </td>
                   <td className="px-8 py-7">
                     <div className="flex flex-col gap-1">
-                      <p className="text-[#112a46] dark:text-zinc-200 font-bold text-sm uppercase tracking-tight">{s.title}</p>
-                      <p className="text-slate-500 dark:text-zinc-400 text-[10px] font-black uppercase tracking-widest leading-relaxed">{s.details}</p>
+                      <p className="text-kk-blue dark:text-zinc-200 font-bold text-sm uppercase tracking-tight">{s.title}</p>
+                      <p className="text-kk-text-muted dark:text-zinc-400 text-[10px] font-black uppercase tracking-widest leading-relaxed">{s.details}</p>
                     </div>
                   </td>
                   <td className="px-8 py-7">
@@ -54,7 +54,7 @@ export default function SuggestionsPage() {
                   </td>
                   <td className="px-8 py-7 text-right">
                     <div className="flex justify-end gap-2">
-                      <button className="flex items-center gap-2 px-4 py-2 bg-[#112a46] dark:bg-zinc-100 text-white dark:text-[#112a46] rounded font-black text-[10px] uppercase tracking-widest hover:opacity-90 active:scale-95 transition-all shadow-sm">
+                      <button className="flex items-center gap-2 px-4 py-2 bg-kk-blue dark:bg-zinc-100 text-white dark:text-kk-blue rounded font-black text-[10px] uppercase tracking-widest hover:opacity-90 active:scale-95 transition-all shadow-sm">
                         <CheckCircle size={14} strokeWidth={3} /> SİSTEME EKLE
                       </button>
                       <button className="p-2 text-red-600 border border-slate-200 dark:border-zinc-800 rounded hover:bg-red-50 transition-all">

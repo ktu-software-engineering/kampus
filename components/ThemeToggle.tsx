@@ -9,11 +9,14 @@ interface ThemeToggleProps {
 }
 
 export default function ThemeToggle({ variant = "fixed" }: ThemeToggleProps) {
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   // Hydration hatasını önlemek için bileşenin yüklendiğinden emin oluyoruz
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
 
   if (!mounted) return null;
 
@@ -63,7 +66,7 @@ export default function ThemeToggle({ variant = "fixed" }: ThemeToggleProps) {
     return (
       <button
         onClick={toggleTheme}
-        className="flex items-center gap-3 px-4 py-3 w-full text-slate-500 dark:text-zinc-400 hover:text-[#112a46] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-800 rounded font-medium transition-colors group"
+        className="flex items-center gap-3 px-4 py-3 w-full text-slate-500 dark:text-zinc-400 hover:text-kk-blue dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-800 rounded font-medium transition-colors group"
         aria-label="Temayı Değiştir"
       >
         {resolvedTheme === "dark" ? (
@@ -73,7 +76,7 @@ export default function ThemeToggle({ variant = "fixed" }: ThemeToggleProps) {
           </>
         ) : (
           <>
-            <Moon size={20} className="text-[#112a46] dark:text-slate-400 group-hover:-rotate-12 transition-transform duration-500" />
+            <Moon size={20} className="text-kk-blue dark:text-slate-400 group-hover:-rotate-12 transition-transform duration-500" />
             <span>Koyu Mod</span>
           </>
         )}
@@ -90,7 +93,7 @@ export default function ThemeToggle({ variant = "fixed" }: ThemeToggleProps) {
       {resolvedTheme === "dark" ? (
         <Sun size={22} className="text-amber-500 group-hover:rotate-45 transition-transform duration-500" />
       ) : (
-        <Moon size={22} className="text-[#112a46] group-hover:-rotate-12 transition-transform duration-500" />
+        <Moon size={22} className="text-kk-blue group-hover:-rotate-12 transition-transform duration-500" />
       )}
     </button>
   );

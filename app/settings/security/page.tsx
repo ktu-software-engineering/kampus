@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Shield, Key, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Shield, Key } from "lucide-react";
 
 export default function SecuritySettingsPage() {
   const [isSaving, setIsSaving] = useState(false);
@@ -15,12 +15,12 @@ export default function SecuritySettingsPage() {
     <div className="space-y-12">
       <section>
         <div className="flex flex-col md:flex-row items-center gap-10 mb-12">
-          <div className="p-4 bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded text-[#06283a] dark:text-white shadow-sm">
+          <div className="p-4 bg-kk-beige-dark border border-kk-blue/10 rounded text-kk-blue shadow-sm">
             <Shield size={40} />
           </div>
           <div className="text-center md:text-left">
-            <h2 className="text-xl font-bold text-slate-900 dark:text-white uppercase tracking-tight">Güvenlik ve Erişim</h2>
-            <p className="text-sm text-slate-500 dark:text-zinc-400 mt-1 max-w-md">Hesap güvenliğinizi artırın ve şifrenizi güncelleyin.</p>
+            <h2 className="text-xl font-bold text-kk-blue uppercase tracking-tight">Güvenlik ve Erişim</h2>
+            <p className="text-sm text-kk-text-muted mt-1 max-w-md">Hesap güvenliğinizi artırın ve şifrenizi güncelleyin.</p>
           </div>
         </div>
 
@@ -28,10 +28,10 @@ export default function SecuritySettingsPage() {
           {/* Şifre Değiştirme */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-10">
             <div>
-              <h3 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
+              <h3 className="text-xs font-black text-kk-blue uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
                 <Key size={14} /> Şifre Güncelleme
               </h3>
-              <p className="text-[12px] text-slate-500 dark:text-zinc-500 leading-relaxed">
+              <p className="text-[12px] text-kk-text-muted leading-relaxed">
                 Hesabınızı güvende tutmak için en az 8 karakterli, karmaşık bir şifre kullanmanızı öneririz.
               </p>
             </div>
@@ -51,7 +51,7 @@ export default function SecuritySettingsPage() {
         <button 
           onClick={handleSave}
           disabled={isSaving}
-          className="px-10 py-3 bg-[#06283a] dark:bg-zinc-100 text-white dark:text-[#06283a] rounded font-bold text-xs uppercase tracking-[0.15em] hover:bg-opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 shadow-sm"
+          className="px-10 py-3 bg-kk-blue text-kk-beige rounded font-bold text-xs uppercase tracking-[0.15em] hover:bg-kk-blue-light active:scale-[0.98] transition-all disabled:opacity-50 shadow-sm"
         >
           {isSaving ? "İşleniyor..." : "Şifreyi Güncelle"}
         </button>
@@ -63,10 +63,10 @@ export default function SecuritySettingsPage() {
 function SecurityInput({ label, type = "text" }: { label: string, type?: string }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-[10px] font-black text-slate-400 dark:text-zinc-500 uppercase tracking-widest ml-0.5">{label}</label>
+      <label className="text-[10px] font-black text-kk-text-muted uppercase tracking-widest ml-0.5">{label}</label>
       <input 
         type={type} 
-        className="w-full px-4 py-3 bg-white dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded text-sm font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-[#06283a] transition-all shadow-sm"
+        className="w-full px-4 py-3 bg-kk-beige-dark/20 border border-kk-blue/10 rounded text-sm font-medium text-kk-blue focus:outline-none focus:ring-1 focus:ring-kk-blue-light transition-all shadow-sm"
       />
     </div>
   );

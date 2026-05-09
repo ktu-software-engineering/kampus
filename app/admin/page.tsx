@@ -1,12 +1,12 @@
-import { Users, Flag, MessageSquare, BookCheck, ArrowRight, BarChart3 } from "lucide-react";
+import { Users, Flag, MessageSquare, BookCheck, ArrowRight } from "lucide-react";
 
 export default function AdminDashboard() {
   return (
     <div className="space-y-10 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 dark:border-zinc-800 pb-8">
         <div>
-          <h1 className="text-2xl font-black text-[#112a46] dark:text-white uppercase tracking-tighter">Sistem Analizi</h1>
-          <p className="text-slate-500 dark:text-zinc-400 mt-1 text-sm font-medium">KampusKarne platformu gerçek zamanlı operasyonel verileri.</p>
+          <h1 className="text-2xl font-black text-kk-blue dark:text-white uppercase tracking-tighter">Sistem Analizi</h1>
+          <p className="text-kk-text-muted dark:text-zinc-400 mt-1 text-sm font-medium">KampusKarne platformu gerçek zamanlı operasyonel verileri.</p>
         </div>
       </div>
 
