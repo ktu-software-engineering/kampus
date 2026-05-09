@@ -39,6 +39,14 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-kk-blue: #06283a;
+  --color-kk-blue-light: #006392;
+  --color-kk-blue-footer: #0e4a6b;
+  --color-kk-beige: #F6F1E7;
+  --color-kk-beige-dark: #edeae2;
+  --color-kk-gold: #C8941A;
+  --color-kk-text: #2a2520;
+  --color-kk-text-muted: #6b6356;
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -127,4 +135,19 @@
   html {
     @apply font-sans;
   }
+}
+
+.display-serif {
+  font-family: var(--font-fraunces), "Georgia", serif;
+  font-optical-sizing: auto;
+  font-feature-settings: "ss01", "ss02";
+}
+
+::selection {
+  background: rgba(0, 99, 146, 0.18);
+  color: #06283a;
+}
+
+.kk-search-input::placeholder {
+  color: #a8a090;
 }
