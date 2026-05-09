@@ -128,3 +128,18 @@
     @apply font-sans;
   }
 }
+
+.display-serif {
+  font-family: var(--font-fraunces), "Georgia", serif;
+  font-optical-sizing: auto;
+  font-feature-settings: "ss01", "ss02";
+}
+
+::selection {
+  background: rgba(0, 99, 146, 0.18);
+  color: #06283a;
+}
+
+.kk-search-input::placeholder {
+  color: #a8a090;
+}
