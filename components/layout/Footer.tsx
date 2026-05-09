@@ -2,10 +2,16 @@
 
 import React from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 const newSiteLogo = "/images/new_site_logo_1.png";
 
 export function Footer() {
+  const pathname = usePathname();
+  
+  // Admin sayfalarında Footer'ı gösterme
+  if (pathname?.startsWith("/admin")) return null;
+
   return (
     <footer className="relative z-[10] bg-kk-blue-footer border-none pt-8 pb-7 pr-8 pl-2">
       <div className="kk-footer-inner max-w-full m-0 flex items-center justify-between flex-wrap gap-3">

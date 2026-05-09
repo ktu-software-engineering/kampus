@@ -6,79 +6,7 @@ import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
-
-function BackgroundTexture() {
-  return (
-    <>
-      <div
-        aria-hidden="true"
-        className="fixed inset-0 pointer-events-none z-0"
-        style={{
-          background: `
-            repeating-linear-gradient(
-              -38deg,
-              transparent 0px,
-              transparent 18px,
-              rgba(255,255,255,0.72) 18px,
-              rgba(255,255,255,0.72) 19px,
-              transparent 19px,
-              transparent 42px
-            ),
-            repeating-linear-gradient(
-              -38deg,
-              transparent 0px,
-              transparent 74px,
-              rgba(255,255,255,0.45) 74px,
-              rgba(255,255,255,0.45) 76px,
-              transparent 76px,
-              transparent 160px
-            )
-          `,
-          maskImage: "radial-gradient(ellipse 95% 70% at 20% 10%, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.25) 55%, transparent 85%)",
-          WebkitMaskImage: "radial-gradient(ellipse 95% 70% at 20% 10%, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.25) 55%, transparent 85%)",
-        }}
-      />
-      <div
-        aria-hidden="true"
-        className="fixed inset-0 pointer-events-none z-0"
-        style={{
-          background: `
-            repeating-linear-gradient(
-              -38deg,
-              transparent 0px,
-              transparent 18px,
-              rgba(255,255,255,0.72) 18px,
-              rgba(255,255,255,0.72) 19px,
-              transparent 19px,
-              transparent 42px
-            ),
-            repeating-linear-gradient(
-              -38deg,
-              transparent 0px,
-              transparent 74px,
-              rgba(255,255,255,0.45) 74px,
-              rgba(255,255,255,0.45) 76px,
-              transparent 76px,
-              transparent 160px
-            )
-          `,
-          maskImage: "radial-gradient(ellipse 95% 70% at 80% 90%, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.25) 55%, transparent 85%)",
-          WebkitMaskImage: "radial-gradient(ellipse 95% 70% at 80% 90%, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.25) 55%, transparent 85%)",
-        }}
-      />
-      <div
-        aria-hidden="true"
-        className="fixed inset-0 pointer-events-none z-0"
-        style={{
-          background: `
-            radial-gradient(ellipse 70% 55% at 0% 0%, rgba(14,74,107,0.10) 0%, transparent 65%),
-            radial-gradient(ellipse 70% 55% at 100% 100%, rgba(14,74,107,0.10) 0%, transparent 65%)
-          `,
-        }}
-      />
-    </>
-  );
-}
+import { BackgroundTexture } from "@/components/layout/BackgroundTexture";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -89,10 +17,10 @@ export default function LoginPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col bg-kk-beige-dark relative overflow-x-hidden font-['Inter',-apple-system,BlinkMacSystemFont,'Segoe_UI',sans-serif]">
+    <div className="min-h-screen flex flex-col bg-kk-beige-dark font-['Inter',-apple-system,BlinkMacSystemFont,'Segoe_UI',sans-serif] relative overflow-x-hidden">
       <BackgroundTexture />
 
-      <div className="relative z-10 flex flex-col min-h-screen">
+      <div className="relative z-10 flex flex-col flex-1">
         <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
         <main className="flex-1 flex items-center justify-center py-10 px-5">
