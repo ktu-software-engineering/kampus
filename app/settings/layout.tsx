@@ -60,9 +60,6 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
               </div>
               
               <div className="space-y-2 border-t border-slate-100 dark:border-zinc-800 pt-4">
-                <div className="px-1">
-                  <ThemeToggle variant="inline" />
-                </div>
                 <button className="w-full py-2 text-[11px] font-bold text-red-600 border border-red-50 hover:bg-red-50 dark:border-red-900/10 dark:hover:bg-red-900/20 rounded transition-colors uppercase tracking-wider">
                   Oturumu Kapat
                 </button>

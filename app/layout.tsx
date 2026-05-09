@@ -1,14 +1,26 @@
 import type { Metadata } from "next";
+import { Geist, Geist_Mono, Fraunces } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import "./globals.css";
 
-// 1. Header ve Footer'ı içeri aktarıyoruz
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "KampusKarne",
-  description: "Türkiye'nin ilk üniversite ders ve eğitmen değerlendirme platformu.",
+  description: "Hocaları değerlendir, fark yarat.",
 };
 
 export default function RootLayout({
@@ -18,22 +30,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="tr" suppressHydrationWarning>
-      <body className="bg-kampus-bg text-kampus-navy min-h-screen flex flex-col antialiased">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} antialiased`}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
           enableSystem={false}
         >
-          {/* 2. Sitenin üst kısmı */}
-          <Header />
-          
-          {/* 3. Ana İçerik (Esnek yapıyoruz ki footer hep en altta kalsın) */}
-          <main className="flex-1 flex flex-col">
-            {children}
-          </main>
-          
-          {/* 4. Sitenin alt kısmı */}
-          <Footer />
+          {children}
         </ThemeProvider>
       </body>
     </html>
