@@ -3,9 +3,9 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, User, Mail, Lock, Building2, ChevronDown, Check } from "lucide-react";
 import { useRouter } from "next/navigation";
-
-const siteLogo = "/images/site_logo-1.png";
-const newSiteLogo = "/images/new_site_logo_1.png";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
+import { Button } from "@/components/ui/button";
 
 const universities = [
   "Karadeniz Teknik Üniversitesi",
@@ -16,8 +16,8 @@ function BackgroundTexture() {
     <>
       <div
         aria-hidden="true"
+        className="fixed inset-0 pointer-events-none z-0"
         style={{
-          position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0,
           background: `
             repeating-linear-gradient(-38deg, transparent 0px, transparent 18px, rgba(255,255,255,0.72) 18px, rgba(255,255,255,0.72) 19px, transparent 19px, transparent 42px),
             repeating-linear-gradient(-38deg, transparent 0px, transparent 74px, rgba(255,255,255,0.45) 74px, rgba(255,255,255,0.45) 76px, transparent 76px, transparent 160px)
@@ -28,8 +28,8 @@ function BackgroundTexture() {
       />
       <div
         aria-hidden="true"
+        className="fixed inset-0 pointer-events-none z-0"
         style={{
-          position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0,
           background: `
             repeating-linear-gradient(-38deg, transparent 0px, transparent 18px, rgba(255,255,255,0.72) 18px, rgba(255,255,255,0.72) 19px, transparent 19px, transparent 42px),
             repeating-linear-gradient(-38deg, transparent 0px, transparent 74px, rgba(255,255,255,0.45) 74px, rgba(255,255,255,0.45) 76px, transparent 76px, transparent 160px)
@@ -40,8 +40,8 @@ function BackgroundTexture() {
       />
       <div
         aria-hidden="true"
+        className="fixed inset-0 pointer-events-none z-0"
         style={{
-          position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0,
           background: `
             radial-gradient(ellipse 70% 55% at 0% 0%, rgba(14,74,107,0.10) 0%, transparent 65%),
             radial-gradient(ellipse 70% 55% at 100% 100%, rgba(14,74,107,0.10) 0%, transparent 65%)
@@ -62,25 +62,16 @@ function PasswordStrength({ password }: { password: string }) {
   const labels = ["Çok Zayıf", "Zayıf", "Orta", "İyi", "Güçlü"];
   const colors = ["#ef4444", "#f97316", "#eab308", "#3b82f6", "#1d3a52"];
   return (
-    <div style={{ marginTop: "8px", display: "flex", flexDirection: "column", gap: "6px" }}>
-      <div style={{ display: "flex", gap: "4px" }}>
+    <div className="mt-2 flex flex-col gap-1.5">
+      <div className="flex gap-1">
         {[0, 1, 2, 3].map((i) => (
-          <div key={i} style={{ height: "3px", flex: 1, borderRadius: "99px", transition: "all 0.3s", backgroundColor: i < score ? colors[score] : "#e2ddd6" }} />
+          <div key={i} className={`h-1 flex-1 rounded-full transition-all duration-300 ${i < score ? "" : "bg-[#e2ddd6]"}`} style={{ backgroundColor: i < score ? colors[score] : undefined }} />
         ))}
       </div>
-      <span style={{ fontSize: "0.72rem", color: colors[score], fontWeight: 600, letterSpacing: "0.02em" }}>{labels[score]}</span>
+      <span className="text-[0.72rem] font-semibold tracking-wider" style={{ color: colors[score] }}>{labels[score]}</span>
     </div>
   );
 }
-
-const inputStyle = {
-  backgroundColor: "#f5f1ea",
-  border: "1.5px solid #e8e2d9",
-  color: "#1d3a52",
-  fontSize: "0.875rem",
-  borderRadius: "12px",
-  transition: "border-color 0.2s, box-shadow 0.2s",
-};
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -91,6 +82,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [form, setForm] = useState({ firstName: "", lastName: "", email: "", university: "", password: "", confirm: "" });
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const passwordsMatch = form.confirm === "" || form.password === form.confirm;
 
@@ -111,213 +103,198 @@ export default function RegisterPage() {
 
   if (submitted) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", backgroundColor: "#edeae2", padding: "0 16px", position: "relative", overflowX: "hidden" }}>
+      <div className="min-h-screen flex flex-col bg-kk-beige-dark relative overflow-x-hidden font-['Inter',-apple-system,BlinkMacSystemFont,'Segoe_UI',sans-serif]">
         <BackgroundTexture />
-        <div style={{ position: "relative", zIndex: 1, width: "100%", maxWidth: "440px", borderRadius: "24px", padding: "48px 40px", textAlign: "center", backgroundColor: "#ffffff", boxShadow: "0 4px 40px rgba(29,58,82,0.08)", border: "1px solid #e8e2d9" }}>
-          <div style={{ width: "64px", height: "64px", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", backgroundColor: "#1d3a52" }}>
-            <Check size={28} color="#ffffff" strokeWidth={2.5} />
+        <div className="relative z-10 flex flex-col min-h-screen items-center justify-center p-4">
+          <div className="w-full max-w-[440px] bg-white rounded-3xl p-12 text-center shadow-[0_4px_40px_rgba(29,58,82,0.08)] border border-[#e8e2d9]">
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5 bg-kk-blue">
+              <Check size={28} className="text-white" strokeWidth={2.5} />
+            </div>
+            <h2 className="text-kk-blue text-[1.6rem] font-extrabold mb-2 tracking-tight">Kaydın Tamamlandı!</h2>
+            <p className="text-kk-text-muted text-[0.95rem] leading-relaxed mb-8">
+              Hoş geldin, <span className="text-kk-blue font-bold">{form.firstName}</span>! Artık hocaları değerlendirebilirsin.
+            </p>
+            <Button
+              onClick={() => router.push("/")}
+              variant="kk-login"
+              size="unsized"
+              className="w-full py-3.5 rounded-xl text-[0.9rem] font-bold"
+            >
+              Ana Sayfaya Dön
+            </Button>
           </div>
-          <h2 style={{ color: "#1d3a52", fontSize: "1.6rem", fontWeight: 800, marginBottom: "8px", letterSpacing: "-0.02em" }}>Kaydın Tamamlandı!</h2>
-          <p style={{ color: "#7a7267", fontSize: "0.95rem", lineHeight: 1.6, marginBottom: "32px" }}>
-            Hoş geldin, <span style={{ color: "#1d3a52", fontWeight: 700 }}>{form.firstName}</span>! Artık hocaları değerlendirebilirsin.
-          </p>
-          <button
-            onClick={() => router.push("/")}
-            style={{ width: "100%", padding: "14px", borderRadius: "12px", backgroundColor: "#1d3a52", color: "#ffffff", fontWeight: 700, fontSize: "0.9rem", border: "none", cursor: "pointer" }}
-          >
-            Ana Sayfaya Dön
-          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "#edeae2", position: "relative", overflowX: "hidden" }}>
+    <div className="min-h-screen flex flex-col bg-kk-beige-dark relative overflow-x-hidden font-['Inter',-apple-system,BlinkMacSystemFont,'Segoe_UI',sans-serif]">
       <BackgroundTexture />
 
-      <nav style={{ position: "relative", zIndex: 10, width: "100%", padding: "0 32px", height: "80px", display: "flex", alignItems: "center", justifyContent: "space-between", boxSizing: "border-box" }}>
-        <div style={{ cursor: "pointer" }} onClick={() => router.push("/")}>
-          <img src={siteLogo} alt="KampusKarne Logo" style={{ height: "68px", width: "auto", objectFit: "contain" }} />
-        </div>
-        <div className="kk-nav-links" style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-          {["Hocalar", "Hakkımızda"].map((item) => (
-            <button
-              key={item}
-              style={{ padding: "8px 14px", color: "#1d3a52", fontSize: "0.875rem", fontWeight: 500, background: "none", border: "none", cursor: "pointer", borderRadius: "8px", transition: "background 0.18s, color 0.18s" }}
-              onMouseEnter={(e) => { const b = e.currentTarget as HTMLButtonElement; b.style.backgroundColor = "rgba(0,99,146,0.08)"; b.style.color = "#006392"; }}
-              onMouseLeave={(e) => { const b = e.currentTarget as HTMLButtonElement; b.style.backgroundColor = "transparent"; b.style.color = "#1d3a52"; }}
-            >
-              {item}
-            </button>
-          ))}
-          <button
-            onClick={() => router.push("/register")}
-            style={{ padding: "8px 14px", color: "#1d3a52", fontSize: "0.875rem", fontWeight: 500, background: "none", border: "none", cursor: "pointer", borderRadius: "8px", transition: "background 0.18s, color 0.18s" }}
-            onMouseEnter={(e) => { const b = e.currentTarget as HTMLButtonElement; b.style.backgroundColor = "rgba(0,99,146,0.08)"; b.style.color = "#006392"; }}
-            onMouseLeave={(e) => { const b = e.currentTarget as HTMLButtonElement; b.style.backgroundColor = "transparent"; b.style.color = "#1d3a52"; }}
-          >
-            Kaydol
-          </button>
-          <button
-            onClick={() => router.push("/login")}
-            style={{ padding: "10px 20px", backgroundColor: "#1d3a52", color: "#ffffff", fontSize: "0.875rem", fontWeight: 600, border: "none", cursor: "pointer", borderRadius: "10px", marginLeft: "8px", transition: "background 0.18s, transform 0.18s" }}
-            onMouseEnter={(e) => { const b = e.currentTarget as HTMLButtonElement; b.style.backgroundColor = "#006392"; b.style.transform = "translateY(-1px)"; }}
-            onMouseLeave={(e) => { const b = e.currentTarget as HTMLButtonElement; b.style.backgroundColor = "#1d3a52"; b.style.transform = "translateY(0)"; }}
-          >
-            Giriş Yap
-          </button>
-        </div>
-      </nav>
+      <div className="relative z-10 flex flex-col min-h-screen">
+        <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
-      <div style={{ position: "relative", zIndex: 1, flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 16px 60px" }}>
-        <div style={{ width: "100%", maxWidth: "500px" }}>
-          <div style={{ textAlign: "center", marginBottom: "32px" }}>
-            <h1 style={{ color: "#1d3a52", fontSize: "2.2rem", fontWeight: 900, letterSpacing: "-0.03em", lineHeight: 1.1, marginBottom: "10px" }}>Hesap Oluştur</h1>
-            <p style={{ color: "#8c8278", fontSize: "0.95rem", lineHeight: 1.5 }}>
-              Hocaları değerlendirmek için <span style={{ color: "#1d3a52", fontWeight: 700 }}>ücretsiz</span> kaydol.
-            </p>
-          </div>
+        <main className="flex-1 flex items-center justify-center py-10 px-4">
+          <div className="w-full max-w-[560px] bg-white/90 backdrop-blur-[20px] rounded-[28px] p-10 shadow-[0_20px_50px_rgba(29,58,82,0.12)] border border-white/60">
+            <div className="text-center mb-8">
+              <h1 className="text-kk-blue text-[1.75rem] font-extrabold mb-2 tracking-tight">Hesap Oluştur</h1>
+              <p className="text-kk-text-muted text-[0.92rem] leading-relaxed">KampusKarne topluluğuna katıl ve akademiye katkıda bulun.</p>
+            </div>
 
-          <div style={{ borderRadius: "24px", padding: "36px 40px", backgroundColor: "#ffffff", boxShadow: "0 2px 32px rgba(29,58,82,0.07)", border: "1px solid #e8e2d9" }}>
-            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-                {[{ id: "firstName", label: "AD", placeholder: "Adınız" }, { id: "lastName", label: "SOYAD", placeholder: "Soyadınız" }].map(({ id, label, placeholder }) => (
-                  <div key={id} style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                    <label htmlFor={id} style={{ color: "#1d3a52", fontSize: "0.72rem", fontWeight: 800, letterSpacing: "0.08em" }}>{label}</label>
-                    <div style={{ position: "relative" }}>
-                      <User size={13} color="#b0a99f" style={{ position: "absolute", left: "13px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
-                      <input id={id} name={id} type="text" placeholder={placeholder} value={(form as any)[id]} onChange={handleChange} required
-                        style={{ ...inputStyle, width: "100%", paddingLeft: "36px", paddingRight: "12px", paddingTop: "11px", paddingBottom: "11px", outline: "none", boxSizing: "border-box" }}
-                        onFocus={(e) => { e.target.style.borderColor = "#1d3a52"; e.target.style.boxShadow = "0 0 0 3px rgba(29,58,82,0.08)"; }}
-                        onBlur={(e) => { e.target.style.borderColor = "#e8e2d9"; e.target.style.boxShadow = "none"; }}
-                      />
-                    </div>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[0.82rem] font-semibold text-[#5c544d] ml-1">Ad</label>
+                  <div className="relative">
+                    <User size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9a9287]" />
+                    <input
+                      name="firstName"
+                      required
+                      value={form.firstName}
+                      onChange={handleChange}
+                      className="w-full pl-10 pr-3.5 py-3 bg-[#f5f1ea] border-[1.5px] border-[#e8e2d9] text-kk-blue text-[0.875rem] rounded-xl outline-none focus:border-kk-blue-light focus:ring-4 focus:ring-kk-blue-light/10 transition-all"
+                      placeholder="Ahmet"
+                    />
                   </div>
-                ))}
-              </div>
-
-              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                <label htmlFor="email" style={{ color: "#1d3a52", fontSize: "0.72rem", fontWeight: 800, letterSpacing: "0.08em" }}>
-                  E-POSTA ADRESİ <span style={{ color: "#8c8278", fontWeight: 500, marginLeft: "6px", fontSize: "0.68rem" }}>(.edu.tr uzantılı)</span>
-                </label>
-                <div style={{ position: "relative" }}>
-                  <Mail size={13} color="#b0a99f" style={{ position: "absolute", left: "13px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
-                  <input id="email" name="email" type="email" placeholder="ornek@universite.edu.tr" value={form.email} onChange={handleChange} required
-                    style={{ ...inputStyle, width: "100%", paddingLeft: "36px", paddingRight: "16px", paddingTop: "11px", paddingBottom: "11px", outline: "none", boxSizing: "border-box", borderColor: emailError ? "#ef4444" : "#e8e2d9" }}
-                    onFocus={(e) => { e.target.style.borderColor = emailError ? "#ef4444" : "#1d3a52"; e.target.style.boxShadow = "0 0 0 3px rgba(29,58,82,0.08)"; }}
-                    onBlur={(e) => { e.target.style.borderColor = emailError ? "#ef4444" : "#e8e2d9"; e.target.style.boxShadow = "none"; }}
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[0.82rem] font-semibold text-[#5c544d] ml-1">Soyad</label>
+                  <input
+                    name="lastName"
+                    required
+                    value={form.lastName}
+                    onChange={handleChange}
+                    className="w-full px-3.5 py-3 bg-[#f5f1ea] border-[1.5px] border-[#e8e2d9] text-kk-blue text-[0.875rem] rounded-xl outline-none focus:border-kk-blue-light focus:ring-4 focus:ring-kk-blue-light/10 transition-all"
+                    placeholder="Yılmaz"
                   />
                 </div>
-                {emailError && <span style={{ color: "#ef4444", fontSize: "0.72rem", fontWeight: 600 }}>{emailError}</span>}
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                <label htmlFor="university" style={{ color: "#1d3a52", fontSize: "0.72rem", fontWeight: 800, letterSpacing: "0.08em" }}>ÜNİVERSİTE</label>
-                <div style={{ position: "relative" }}>
-                  <Building2 size={13} color="#b0a99f" style={{ position: "absolute", left: "13px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
-                  <ChevronDown size={13} color="#b0a99f" style={{ position: "absolute", right: "13px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
-                  <select id="university" name="university" value={form.university} onChange={handleChange} required
-                    style={{ ...inputStyle, width: "100%", paddingLeft: "36px", paddingRight: "36px", paddingTop: "11px", paddingBottom: "11px", outline: "none", appearance: "none", cursor: "pointer", boxSizing: "border-box", color: form.university ? "#1d3a52" : "#b0a99f" }}
-                    onFocus={(e) => { e.target.style.borderColor = "#1d3a52"; e.target.style.boxShadow = "0 0 0 3px rgba(29,58,82,0.08)"; }}
-                    onBlur={(e) => { e.target.style.borderColor = "#e8e2d9"; e.target.style.boxShadow = "none"; }}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[0.82rem] font-semibold text-[#5c544d] ml-1">Üniversite</label>
+                <div className="relative">
+                  <Building2 size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9a9287] pointer-events-none" />
+                  <select
+                    name="university"
+                    required
+                    value={form.university}
+                    onChange={handleChange}
+                    className="w-full pl-10 pr-10 py-3 bg-[#f5f1ea] border-[1.5px] border-[#e8e2d9] text-kk-blue text-[0.875rem] rounded-xl outline-none appearance-none cursor-pointer focus:border-kk-blue-light focus:ring-4 focus:ring-kk-blue-light/10 transition-all"
                   >
-                    <option value="" disabled>Üniversitenizi seçin</option>
-                    {universities.map((u) => <option key={u} value={u} style={{ color: "#1d3a52" }}>{u}</option>)}
+                    <option value="" disabled>Üniversiteni Seç</option>
+                    {universities.map(u => <option key={u} value={u}>{u}</option>)}
                   </select>
+                  <ChevronDown size={18} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#9a9287] pointer-events-none" />
                 </div>
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                <label htmlFor="password" style={{ color: "#1d3a52", fontSize: "0.72rem", fontWeight: 800, letterSpacing: "0.08em" }}>ŞİFRE</label>
-                <div style={{ position: "relative" }}>
-                  <Lock size={13} color="#b0a99f" style={{ position: "absolute", left: "13px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
-                  <input id="password" name="password" type={showPassword ? "text" : "password"} placeholder="En az 8 karakter" value={form.password} onChange={handleChange} required minLength={8}
-                    style={{ ...inputStyle, width: "100%", paddingLeft: "36px", paddingRight: "40px", paddingTop: "11px", paddingBottom: "11px", outline: "none", boxSizing: "border-box" }}
-                    onFocus={(e) => { e.target.style.borderColor = "#1d3a52"; e.target.style.boxShadow = "0 0 0 3px rgba(29,58,82,0.08)"; }}
-                    onBlur={(e) => { e.target.style.borderColor = "#e8e2d9"; e.target.style.boxShadow = "none"; }}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[0.82rem] font-semibold text-[#5c544d] ml-1">E-posta (.edu.tr)</label>
+                <div className="relative">
+                  <Mail size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9a9287]" />
+                  <input
+                    name="email"
+                    type="email"
+                    required
+                    value={form.email}
+                    onChange={handleChange}
+                    className={`w-full pl-10 pr-3.5 py-3 bg-[#f5f1ea] border-[1.5px] text-kk-blue text-[0.875rem] rounded-xl outline-none transition-all focus:ring-4 focus:ring-kk-blue-light/10 ${
+                      emailError ? "border-red-500 focus:border-red-500" : "border-[#e8e2d9] focus:border-kk-blue-light"
+                    }`}
+                    placeholder="ogrenci@ktu.edu.tr"
                   />
-                  <button type="button" tabIndex={-1} onClick={() => setShowPassword(v => !v)} style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", opacity: 0.6 }}>
-                    {showPassword ? <EyeOff size={15} color="#1d3a52" /> : <Eye size={15} color="#1d3a52" />}
-                  </button>
                 </div>
-                <PasswordStrength password={form.password} />
+                {emailError && <span className="text-[0.75rem] text-red-500 ml-1">{emailError}</span>}
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                <label htmlFor="confirm" style={{ color: "#1d3a52", fontSize: "0.72rem", fontWeight: 800, letterSpacing: "0.08em" }}>ŞİFRE TEKRAR</label>
-                <div style={{ position: "relative" }}>
-                  <Lock size={13} color="#b0a99f" style={{ position: "absolute", left: "13px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
-                  <input id="confirm" name="confirm" type={showConfirm ? "text" : "password"} placeholder="Şifreyi tekrar girin" value={form.confirm} onChange={handleChange} required
-                    style={{ ...inputStyle, width: "100%", paddingLeft: "36px", paddingRight: "40px", paddingTop: "11px", paddingBottom: "11px", outline: "none", boxSizing: "border-box", borderColor: !passwordsMatch && form.confirm ? "#ef4444" : "#e8e2d9" }}
-                    onFocus={(e) => { e.target.style.borderColor = !passwordsMatch ? "#ef4444" : "#1d3a52"; e.target.style.boxShadow = "0 0 0 3px rgba(29,58,82,0.08)"; }}
-                    onBlur={(e) => { e.target.style.borderColor = !passwordsMatch && form.confirm ? "#ef4444" : "#e8e2d9"; e.target.style.boxShadow = "none"; }}
-                  />
-                  <button type="button" tabIndex={-1} onClick={() => setShowConfirm(v => !v)} style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", opacity: 0.6 }}>
-                    {showConfirm ? <EyeOff size={15} color="#1d3a52" /> : <Eye size={15} color="#1d3a52" />}
-                  </button>
-                </div>
-                {!passwordsMatch && form.confirm && <span style={{ color: "#ef4444", fontSize: "0.72rem", fontWeight: 600 }}>Şifreler eşleşmiyor.</span>}
-              </div>
-
-              <label style={{ display: "flex", alignItems: "flex-start", gap: "10px", cursor: "pointer", userSelect: "none" }}>
-                <div style={{ position: "relative", marginTop: "2px", flexShrink: 0 }}>
-                  <input type="checkbox" style={{ position: "absolute", opacity: 0, width: 0, height: 0 }} checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
-                  <div onClick={() => setAgreed(v => !v)} style={{ width: "17px", height: "17px", borderRadius: "5px", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s", backgroundColor: agreed ? "#1d3a52" : "#f5f1ea", border: agreed ? "1.5px solid #1d3a52" : "1.5px solid #d6cfc5" }}>
-                    {agreed && <Check size={10} color="#ffffff" strokeWidth={3} />}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[0.82rem] font-semibold text-[#5c544d] ml-1">Şifre</label>
+                  <div className="relative">
+                    <Lock size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9a9287]" />
+                    <input
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      required
+                      maxLength={32}
+                      value={form.password}
+                      onChange={handleChange}
+                      className="w-full pl-10 pr-10 py-3 bg-[#f5f1ea] border-[1.5px] border-[#e8e2d9] text-kk-blue text-[0.875rem] rounded-xl outline-none focus:border-kk-blue-light focus:ring-4 focus:ring-kk-blue-light/10 transition-all"
+                      placeholder="••••••••"
+                    />
+                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-[#9a9287] hover:text-kk-blue transition-colors">
+                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
                   </div>
+                  <PasswordStrength password={form.password} />
                 </div>
-                <span style={{ color: "#7a7267", fontSize: "0.82rem", lineHeight: 1.55 }}>
-                  <span style={{ color: "#1d3a52", fontWeight: 700, cursor: "pointer" }}>Kullanım Koşulları</span>{" "}ve{" "}
-                  <span style={{ color: "#1d3a52", fontWeight: 700, cursor: "pointer" }}>Gizlilik Politikası</span>&apos;nı okudum ve kabul ediyorum.
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[0.82rem] font-semibold text-[#5c544d] ml-1">Şifre Tekrar</label>
+                  <div className="relative">
+                    <input
+                      name="confirm"
+                      type={showConfirm ? "text" : "password"}
+                      required
+                      maxLength={32}
+                      value={form.confirm}
+                      onChange={handleChange}
+                      className={`w-full pl-3.5 pr-10 py-3 bg-[#f5f1ea] border-[1.5px] text-kk-blue text-[0.875rem] rounded-xl outline-none transition-all focus:ring-4 focus:ring-kk-blue-light/10 ${
+                        passwordsMatch ? "border-[#e8e2d9] focus:border-kk-blue-light" : "border-red-500 focus:border-red-500"
+                      }`}
+                      placeholder="••••••••"
+                    />
+                    <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-[#9a9287] hover:text-kk-blue transition-colors">
+                      {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
+                  {!passwordsMatch && <span className="text-[0.72rem] text-red-500 mt-1">Şifreler eşleşmiyor.</span>}
+                </div>
+              </div>
+
+              <label className="flex items-start gap-2.5 cursor-pointer mt-1">
+                <input
+                  type="checkbox"
+                  checked={agreed}
+                  onChange={(e) => setAgreed(e.target.checked)}
+                  className="w-[17px] h-[17px] mt-0.5 accent-kk-blue-light cursor-pointer"
+                />
+                <span className="text-[0.82rem] text-kk-text-muted leading-relaxed">
+                  <span className="text-kk-blue-light font-semibold">Kullanım Koşulları</span> ve <span className="text-kk-blue-light font-semibold">Gizlilik Politikası</span>&apos;nı okudum, kabul ediyorum.
                 </span>
               </label>
 
-              <button
+              <Button
                 type="submit"
+                variant="kk-login"
+                size="unsized"
                 disabled={loading || !agreed || !passwordsMatch || !!emailError}
-                style={{ width: "100%", padding: "14px", borderRadius: "12px", backgroundColor: "#1d3a52", color: "#ffffff", fontWeight: 700, fontSize: "0.95rem", border: "none", cursor: loading || !agreed || !passwordsMatch || !!emailError ? "not-allowed" : "pointer", letterSpacing: "0.02em", opacity: loading || !agreed || !!emailError ? 0.5 : 1, transition: "opacity 0.2s, transform 0.18s, background 0.18s", marginTop: "4px" }}
-                onMouseEnter={(e) => { if (!loading && agreed && !emailError) { const b = e.currentTarget as HTMLButtonElement; b.style.backgroundColor = "#006392"; b.style.transform = "translateY(-1px)"; } }}
-                onMouseLeave={(e) => { const b = e.currentTarget as HTMLButtonElement; b.style.backgroundColor = "#1d3a52"; b.style.transform = "translateY(0)"; }}
+                className="w-full py-3.5 rounded-xl text-[0.95rem] font-bold shadow-[0_10px_25px_rgba(29,58,82,0.15)] mt-2 transition-all disabled:bg-gray-300"
               >
-                {loading ? (
-                  <span style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
-                    <svg style={{ animation: "spin 1s linear infinite", width: "16px", height: "16px" }} viewBox="0 0 24 24" fill="none">
-                      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" style={{ opacity: 0.25 }} />
-                      <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" style={{ opacity: 0.75 }} />
-                    </svg>
-                    Kaydediliyor…
-                  </span>
-                ) : "Ücretsiz Kaydol"}
-              </button>
+                {loading ? "Hesabın Oluşturuluyor..." : "Kayıt Ol"}
+              </Button>
             </form>
-          </div>
 
-          <p style={{ textAlign: "center", marginTop: "20px", color: "#8c8278", fontSize: "0.875rem" }}>
-            Zaten hesabın var mı?{" "}
-            <button
-              onClick={() => router.push("/login")}
-              style={{ color: "#1d3a52", fontWeight: 700, background: "none", border: "none", cursor: "pointer", fontSize: "0.875rem" }}
-            >
-              Giriş Yap
-            </button>
-          </p>
-        </div>
+            <div className="mt-7 text-center text-[0.9rem] text-kk-text-muted">
+              Zaten hesabın var mı?{" "}
+              <span
+                onClick={() => router.push("/login")}
+                className="text-kk-blue-light font-bold cursor-pointer border-b-[1.5px] border-kk-blue-light/20 pb-0.5 hover:border-kk-blue-light transition-colors"
+              >
+                Giriş Yap
+              </span>
+            </div>
+          </div>
+        </main>
+
+        <Footer />
       </div>
 
-      <footer style={{ position: "relative", zIndex: 1, background: "#0e4a6b", padding: "28px 32px" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
-          <img src={newSiteLogo} alt="KampusKarne Logo" style={{ height: "44px", width: "auto", objectFit: "contain" }} />
-          <p style={{ fontSize: "12px", color: "rgba(246,241,231,0.5)", margin: 0, letterSpacing: "0.02em" }}>
-            © 2026 KampusKarne · Üniversite Değerlendirme Platformu · Tüm hakları saklıdır.
-          </p>
-        </div>
-      </footer>
-
       <style>{`
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @media (max-width: 600px) { .kk-nav-links button:not(:last-child) { display: none; } }
+        @media (max-width: 600px) {
+          main { padding: 24px 16px !important; }
+          .w-full.max-w-\[560px\] { padding: 32px 24px !important; }
+        }
       `}</style>
     </div>
   );

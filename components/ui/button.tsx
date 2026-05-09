@@ -28,20 +28,20 @@ const buttonVariants = cva(
           "transition-all duration-200",
         "kk-nav":
           "rounded-full px-3.5 py-2 cursor-pointer bg-transparent border-none " +
-          "text-[#06283a] text-sm font-medium " +
-          "hover:bg-[rgba(0,99,146,0.08)] hover:text-[#006392] " +
+          "text-kk-blue text-sm font-medium " +
+          "hover:bg-[rgba(0,99,146,0.08)] hover:text-kk-blue-light " +
           "transition-all duration-200",
         "kk-login":
           "rounded-[8px] px-5 py-2.5 ml-1 cursor-pointer " +
-          "bg-[#06283a] border-none text-[#F6F1E7] " +
+          "bg-kk-blue border-none text-kk-beige " +
           "text-sm font-semibold tracking-[0.01em] " +
-          "hover:bg-[#006392] hover:-translate-y-px " +
+          "hover:bg-kk-blue-light hover:-translate-y-px " +
           "transition-all duration-200",
         "kk-search-submit":
           "rounded-full h-[46px] px-5 shrink-0 cursor-pointer " +
-          "bg-[#06283a] border-none text-[#F6F1E7] " +
+          "bg-kk-blue border-none text-kk-beige " +
           "text-sm font-semibold tracking-[0.01em] " +
-          "hover:bg-[#006392] transition-all duration-200",
+          "hover:bg-kk-blue-light transition-all duration-200",
         "kk-cat":
           "group flex-col gap-0 w-full cursor-pointer rounded-[22px] pt-[20px] pb-[18px] px-4 " +
           "bg-[rgba(255,253,248,0.46)] border-[1.5px] border-[rgba(255,255,255,0.72)] " +
@@ -53,11 +53,11 @@ const buttonVariants = cva(
         "kk-ghost-link":
           "bg-transparent border-none p-0 cursor-pointer " +
           "gap-1.5 text-[13px] font-semibold " +
-          "text-[#006392] hover:text-[#06283a] " +
+          "text-kk-blue-light hover:text-kk-blue " +
           "transition-all duration-200",
         "kk-cta":
           "rounded-[14px] px-7 py-4 shrink-0 cursor-pointer " +
-          "bg-[#F6F1E7] border-none text-[#06283a] " +
+          "bg-kk-beige border-none text-kk-blue " +
           "text-sm font-bold tracking-[0.015em] " +
           "shadow-[0_8px_24px_-8px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.6)] " +
           "hover:bg-[#FFFCF3] hover:-translate-y-0.5 " +
@@ -69,13 +69,13 @@ const buttonVariants = cva(
           "hover:bg-white/25 transition-colors duration-200",
         "kk-feedback-submit":
           "w-full rounded-xl py-[10px] cursor-pointer border-none " +
-          "bg-[#006392] text-white text-[13px] font-semibold " +
+          "bg-kk-blue-light text-white text-[13px] font-semibold " +
           "hover:bg-[#005580] " +
           "disabled:bg-[#c0c0c0] disabled:cursor-not-allowed disabled:opacity-100 " +
           "transition-colors duration-200",
         "kk-feedback-trigger":
           "rounded-full px-[18px] py-3 cursor-pointer border-none " +
-          "bg-[#006392] text-white text-[13px] font-semibold " +
+          "bg-kk-blue-light text-white text-[13px] font-semibold " +
           "shadow-[0_4px_20px_rgba(0,99,146,0.35)] " +
           "hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(0,99,146,0.4)] " +
           "transition-all duration-200",
