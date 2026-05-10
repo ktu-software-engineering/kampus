@@ -122,20 +122,22 @@ export function Navbar({ sidebarOpen, setSidebarOpen }: NavbarProps) {
               className="kk-site-logo h-[60px] w-auto object-contain ml-3 cursor-pointer"
               onClick={() => router.push("/")}
             />
-            <Button
-              variant="kk-hamburger"
-              size="unsized"
-              onClick={() => setSidebarOpen((v) => !v)}
-              aria-label={sidebarOpen ? "Menüyü kapat" : "Menüyü aç"}
-              aria-expanded={sidebarOpen}
-              className="mobile-hamburger backdrop-blur-[10px]"
-            >
-              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <line x1="4" y1="7" x2="20" y2="7" stroke="#06283a" strokeWidth="1.8" strokeLinecap="round" />
-                <line x1="4" y1="12" x2="20" y2="12" stroke="#06283a" strokeWidth="1.8" strokeLinecap="round" />
-                <line x1="4" y1="17" x2="20" y2="17" stroke="#06283a" strokeWidth="1.8" strokeLinecap="round" />
-              </svg>
-            </Button>
+            {!isLoginPage && !isRegisterPage && (
+              <Button
+                variant="kk-hamburger"
+                size="unsized"
+                onClick={() => setSidebarOpen((v) => !v)}
+                aria-label={sidebarOpen ? "Menüyü kapat" : "Menüyü aç"}
+                aria-expanded={sidebarOpen}
+                className="mobile-hamburger backdrop-blur-[10px]"
+              >
+                <svg viewBox="0 0 24 24" width="40" height="40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="4" y1="7" x2="20" y2="7" stroke="#06283a" strokeWidth="1.8" strokeLinecap="round" />
+                  <line x1="4" y1="12" x2="20" y2="12" stroke="#06283a" strokeWidth="1.8" strokeLinecap="round" />
+                  <line x1="4" y1="17" x2="20" y2="17" stroke="#06283a" strokeWidth="1.8" strokeLinecap="round" />
+                </svg>
+              </Button>
+            )}
           </div>
 
           <nav className="flex items-center gap-2 pt-1.5">
