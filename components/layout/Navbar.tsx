@@ -9,16 +9,22 @@ import { Button } from "@/components/ui/button";
 const siteLogo = "/images/site_logo-1.png";
 
 interface NavbarProps {
-  sidebarOpen: boolean;
-  setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  sidebarOpen?: boolean;
+  setSidebarOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function Navbar({ sidebarOpen, setSidebarOpen }: NavbarProps) {
+export function Navbar({ sidebarOpen = false, setSidebarOpen = () => {} }: NavbarProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const isLoginPage = pathname === "/login";
   const isRegisterPage = pathname === "/register";
+  const isSettingsPage = pathname?.startsWith("/settings");
 
   return (
     <>
@@ -122,7 +128,7 @@ export function Navbar({ sidebarOpen, setSidebarOpen }: NavbarProps) {
               className="kk-site-logo h-[60px] w-auto object-contain ml-3 cursor-pointer"
               onClick={() => router.push("/")}
             />
-            {!isLoginPage && !isRegisterPage && (
+            {mounted && isSettingsPage && !isLoginPage && !isRegisterPage && (
               <Button
                 variant="kk-hamburger"
                 size="unsized"
