@@ -1,8 +1,8 @@
-// Sunucu taraflı Supabase bağlantısı (Server Components ve API Routes için)
-// Gizli SUPABASE_SERVICE_ROLE_KEY bu dosyadan kullanılır — istemciye asla gönderilmez
 import { createServerClient } from "@supabase/ssr";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 
+// Normal sunucu client — kullanıcı oturumunu cookie'den okur
 export async function createClient() {
   const cookieStore = await cookies();
   return createServerClient(
@@ -20,5 +20,13 @@ export async function createClient() {
         },
       },
     }
+  );
+}
+
+// Admin client — RLS'yi bypass eder, sadece güvenilir sunucu kodunda kullan
+export function createAdminClient() {
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 }

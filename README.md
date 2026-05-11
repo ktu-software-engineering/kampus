@@ -39,14 +39,14 @@ KampusKarne bu bilgi birikimini kalıcı, organize ve aranabilir hale getirir:
 ### Gereksinimler
 
 - Node.js 20+
-- pnpm
+- pnpm 11+
 
 ### Adımlar
 
 ```bash
 # 1. Repoyu klonla
-git clone https://github.com/iibrahimddogan/uni-platform.git
-cd uni-platform
+git clone https://github.com/ktu-software-engineering/kampus.git
+cd kampus
 
 # 2. Bağımlılıkları yükle
 pnpm install
@@ -103,49 +103,59 @@ app/
 ├── (auth)/                       ← Parantezli klasörler URL'e dahil olmaz
 │   │                                (auth) sadece giriş/kayıt sayfalarını gruplar
 │   ├── login/
-│   │   └── page.tsx              ← /login sayfası — kullanıcı giriş formu
+│   │   └── page.tsx              ← /login sayfası — kullanıcı giriş formu ✅
 │   └── register/
-│       └── page.tsx              ← /register sayfası — üyelik formu (.edu.tr kontrolü)
+│       └── page.tsx              ← /register sayfası — üyelik formu (.edu.tr kontrolü) ✅
 │
 ├── search/
-│   └── page.tsx                  ← /search sayfası — hoca/ders arama + filtreler
+│   └── page.tsx                  ← /search sayfası — hoca/ders arama + filtreler 🚧
 │
 ├── instructors/
 │   └── [id]/
-│       └── page.tsx              ← /instructors/123 — hoca profili sayfası
+│       └── page.tsx              ← /instructors/123 — hoca profili sayfası ✅
 │                                    [id] dinamik parametredir, her hoca için ayrı çalışır
 │
 ├── courses/
 │   └── [id]/
-│       └── page.tsx              ← /courses/456 — ders sayfası, ortalama puanlar + yorumlar
+│       └── page.tsx              ← /courses/456 — ders sayfası 🚧
 │
 ├── suggest/
-│   └── page.tsx                  ← /suggest — yeni hoca veya ders öneri formu
+│   └── page.tsx                  ← /suggest — yeni hoca veya ders öneri formu ✅
+│
+├── settings/
+│   ├── page.tsx                  ← /settings — profil ayarları ✅
+│   ├── notifications/
+│   │   └── page.tsx              ← /settings/notifications — bildirim ayarları ✅
+│   └── security/
+│       └── page.tsx              ← /settings/security — şifre ve güvenlik ✅
 │
 ├── professor/
 │   └── dashboard/
-│       └── page.tsx              ← /professor/dashboard — profesör paneli (sadece profesörler)
+│       └── page.tsx              ← /professor/dashboard — profesör paneli 🚧
 │
 ├── admin/                        ← /admin — yönetici paneli (sadece adminler)
-│   ├── page.tsx                  ← Admin ana sayfası
-│   ├── instructors/              ← Hoca ekle/düzenle/sil
-│   ├── courses/                  ← Ders ekle/düzenle/sil
-│   ├── suggestions/              ← Öğrencilerin öneri kuyruğu
-│   └── reports/                  ← Şikayet edilen yorum kuyruğu
+│   ├── page.tsx                  ← Admin ana sayfası ✅
+│   ├── instructors/              ← Hoca ekle/düzenle/sil ✅
+│   ├── courses/                  ← Ders ekle/düzenle/sil ✅
+│   ├── users/                    ← Kullanıcı yönetimi ✅
+│   ├── suggestions/              ← Öğrencilerin öneri kuyruğu ✅
+│   └── reports/                  ← Şikayet edilen yorum kuyruğu ✅
 │
-├── api/                          ← Backend API — tarayıcı bu adreslere istek atar
-│   ├── auth/                     ← POST /api/auth/register, POST /api/auth/login
-│   ├── instructors/              ← GET /api/instructors — hoca listesi
-│   ├── courses/                  ← GET /api/courses — ders listesi
-│   ├── reviews/                  ← POST /api/reviews — yorum yaz, upvote, şikayet
-│   ├── suggest/                  ← POST /api/suggest — öneri gönder
-│   └── admin/                    ← Moderasyon işlemleri (yetkili kullanıcıya özel)
+├── api/                          ← Backend API — route'lar mevcut ama henüz 501 stub
+│   ├── auth/                     ← POST /api/auth/register, POST /api/auth/login 🚧
+│   ├── instructors/              ← GET /api/instructors — hoca listesi 🚧
+│   ├── courses/                  ← GET /api/courses — ders listesi 🚧
+│   ├── reviews/                  ← POST /api/reviews — yorum yaz, upvote, şikayet 🚧
+│   ├── suggest/                  ← POST /api/suggest — öneri gönder 🚧
+│   └── admin/                    ← Moderasyon işlemleri 🚧
 │
 ├── favicon.ico                   ← Tarayıcı sekmesinde görünen küçük ikon
 ├── globals.css                   ← Tüm sayfaya uygulanan CSS (Tailwind buradan başlar)
-├── layout.tsx                    ← Tüm sayfaları saran kapsayıcı (Header + Footer burada)
-└── page.tsx                      ← / (ana sayfa) — arama kutusu ve öne çıkanlar
+├── layout.tsx                    ← Tüm sayfaları saran kapsayıcı
+└── page.tsx                      ← / (ana sayfa) — arama kutusu ve öne çıkanlar ✅
 ```
+
+> ✅ Tamamlandı (mock data ile)  |  🚧 Yapım aşamasında
 
 ---
 
@@ -182,9 +192,12 @@ components/
 │   └── CourseProfile.tsx         ← Dersin tam sayfası (ortalama istatistikler)
 │
 └── layout/
-    ├── Header.tsx                ← Sayfanın üst kısmı: logo, navigasyon menüsü
-    └── Footer.tsx                ← Sayfanın alt kısmı: yasal uyarı, linkler
+    ├── Navbar.tsx                ← Sayfanın üst kısmı: logo, navigasyon menüsü
+    ├── Footer.tsx                ← Sayfanın alt kısmı: yasal uyarı, linkler
+    └── BackgroundTexture.tsx     ← Sayfa arka plan doku bileşeni
 ```
+
+Ek bileşenler (kök `components/`): `ThemeProvider.tsx`, `ThemeToggle.tsx`, `FeedbackButton.tsx`
 
 ---
 

@@ -36,6 +36,7 @@ yarn-error.log*
 
 # claude code
 .claude/
+CLAUDE.md
 
 # vercel
 .vercel
@@ -47,4 +48,7 @@ next-env.d.ts
 
 # Yerel tasarım notları ve spec dosyaları — sadece yerel kalır
 /docs/
+
+# Kişisel proje takip dosyası — sadece yerel kalır
+/TODO.md
 GEMINI.md
