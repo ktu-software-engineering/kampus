@@ -218,6 +218,44 @@ fix/     → hata düzeltmeleri
 
 ---
 
+## Mevcut Uygulama Durumu
+
+### UI Tamamlandı (mock data ile çalışıyor)
+- `/` — Ana sayfa (tam UI)
+- `/login`, `/register` — Auth formları
+- `/instructors/[id]` — Hoca profili
+- `/suggest` — Öneri formu
+- `/settings`, `/settings/notifications`, `/settings/security` — Ayarlar sayfaları
+- `/admin`, `/admin/courses`, `/admin/instructors`, `/admin/users`, `/admin/reports`, `/admin/suggestions` — Admin paneli
+
+### Stub / Yapım Aşamasında
+- `/search` — Sadece placeholder metin
+- `/courses/[id]` — Sadece placeholder metin
+- `/professor/dashboard` — Sadece placeholder metin
+- Tüm API route'ları (`app/api/**`) — 501 döndürüyor, henüz Supabase entegrasyonu yapılmamış
+- `supabase/migrations/` — Boş, migration henüz yazılmamış
+- `supabase/seed.sql` — Sadece yorum satırları
+- `middleware.ts` — Aktif değil, her isteği geçiriyor
+
+### Bileşenler (Mevcut)
+`components/` altında şunlar var: `LoginForm`, `RegisterForm`, `CourseCard`, `CourseProfile`, `InstructorCard`, `InstructorProfile`, `ReviewCard`, `ReviewForm`, `StarRating`, `FilterPanel`, `ResultsList`, `SearchBar`, `Navbar`, `Footer`, `BackgroundTexture`, `ThemeProvider`, `ThemeToggle`, `FeedbackButton`, `ui/button`
+
+---
+
+## Skill ve Plugin Kullanım Kuralı
+
+Claude Code'da yüklü skill ve plugin'ler, önemli görevlerde kullanılmalıdır — ama **gereksiz token harcamamak** için dikkatli olunmalıdır:
+
+- **Skill kullan:** Yeni özellik geliştirme, debugging, kod inceleme, frontend tasarımı, Supabase işlemleri gibi spesifik bir skill'in kapsadığı görevlerde skill'i mutlaka çalıştır.
+- **Skill atla:** Tek satır düzeltme, dosya okuma, basit soru yanıtlama gibi durumlarda skill çalıştırmak token israfıdır.
+- **Önce kontrol et:** Hangi skill'in uygulanabileceğini değerlendirirken skill içeriğini yüklemeden önce adını ve açıklamasını gör — açıkça uygun değilse yükleme.
+- **Supabase işlerinde:** `supabase:supabase` skill'ini çalıştır.
+- **Frontend bileşen yazarken:** `frontend-design:frontend-design` skill'ini çalıştır.
+- **Bug ile karşılaşınca:** `superpowers:systematic-debugging` skill'ini çalıştır.
+- **Yeni feature başlarken:** `superpowers:brainstorming` → `feature-dev:feature-dev` sırasıyla çalıştır.
+
+---
+
 ## MVP Dışı (2. Aşama)
 
 - Forum / chat odası (her derse özel tartışma)
