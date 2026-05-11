@@ -3,9 +3,8 @@
 // - /professor/dashboard → professor rolü zorunlu
 // - Giriş yapılmamışsa /login sayfasına yönlendir
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 
-export function middleware(request: NextRequest) {
+export function middleware() {
   // Yapım aşamasında — Supabase Auth session kontrolü buraya gelecek
   return NextResponse.next();
 }
