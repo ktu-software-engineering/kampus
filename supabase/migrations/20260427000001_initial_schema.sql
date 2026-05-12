@@ -135,10 +135,10 @@ create table suggestions (
 -- Yeni Auth kullanıcısı → users tablosuna ekle
 -- ─────────────────────────────────────────
 
-create or replace function handle_new_user()
-returns trigger language plpgsql security definer as $$
+create or replace function public.handle_new_user()
+returns trigger language plpgsql security definer set search_path = '' as $$
 begin
-  insert into users (id, email)
+  insert into public.users (id, email)
   values (new.id, new.email);
   return new;
 end;
