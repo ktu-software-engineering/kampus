@@ -3,8 +3,9 @@
 import React from "react";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 const siteLogo = "/images/site_logo-1.png";
 
@@ -17,6 +18,7 @@ export function Navbar({ sidebarOpen = false, setSidebarOpen = () => {} }: Navba
   const router = useRouter();
   const pathname = usePathname();
   const [mounted, setMounted] = React.useState(false);
+  const { user, loading } = useCurrentUser();
 
   React.useEffect(() => {
     setMounted(true);
@@ -25,6 +27,16 @@ export function Navbar({ sidebarOpen = false, setSidebarOpen = () => {} }: Navba
   const isLoginPage = pathname === "/login";
   const isRegisterPage = pathname === "/register";
   const isSettingsPage = pathname?.startsWith("/settings");
+
+  async function handleLogout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    window.location.href = "/";
+  }
+
+  function getInitials(name: string | null) {
+    if (!name) return "?";
+    return name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
+  }
 
   return (
     <>
@@ -161,27 +173,57 @@ export function Navbar({ sidebarOpen = false, setSidebarOpen = () => {} }: Navba
                 </Button>
               ))}
             </div>
-            {!isRegisterPage && (
-              <Button
-                variant={isLoginPage ? "kk-login" : "kk-ghost-link"}
-                size="unsized"
-                className={`login-btn mobile-register ${
-                  !isLoginPage ? "text-[13px] py-[9px] px-3.5 border-none rounded-lg text-kk-blue" : ""
-                }`}
-                onClick={() => router.push("/register")}
-              >
-                Kaydol
-              </Button>
-            )}
-            {!isLoginPage && (
-              <Button
-                variant="kk-login"
-                size="unsized"
-                className="login-btn"
-                onClick={() => router.push("/login")}
-              >
-                <span className="login-text">Giriş Yap</span>
-              </Button>
+
+            {mounted && !loading && (
+              user ? (
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => router.push("/settings")}
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-kk-blue/5 transition-colors"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-kk-blue flex items-center justify-center text-[11px] font-bold text-kk-gold">
+                      {getInitials(user.full_name)}
+                    </div>
+                    <span className="text-[13px] font-semibold text-kk-blue hidden sm:block">
+                      {user.full_name?.split(" ")[0] ?? "Profil"}
+                    </span>
+                  </button>
+                  <Button
+                    variant="kk-ghost-link"
+                    size="unsized"
+                    onClick={handleLogout}
+                    className="text-[13px] py-[9px] px-3 border-none rounded-lg text-kk-text-muted hover:text-red-600 flex items-center gap-1.5"
+                  >
+                    <LogOut size={14} />
+                    <span className="hidden sm:block">Çıkış</span>
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  {!isRegisterPage && (
+                    <Button
+                      variant={isLoginPage ? "kk-login" : "kk-ghost-link"}
+                      size="unsized"
+                      className={`login-btn mobile-register ${
+                        !isLoginPage ? "text-[13px] py-[9px] px-3.5 border-none rounded-lg text-kk-blue" : ""
+                      }`}
+                      onClick={() => router.push("/register")}
+                    >
+                      Kaydol
+                    </Button>
+                  )}
+                  {!isLoginPage && (
+                    <Button
+                      variant="kk-login"
+                      size="unsized"
+                      className="login-btn"
+                      onClick={() => router.push("/login")}
+                    >
+                      <span className="login-text">Giriş Yap</span>
+                    </Button>
+                  )}
+                </>
+              )
             )}
           </nav>
         </div>
