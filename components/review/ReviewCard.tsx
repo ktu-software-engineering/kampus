@@ -16,7 +16,7 @@ interface ReviewCardProps {
 }
 
 export default function ReviewCard({ 
-  id, 
+  id: _id, 
   course, 
   date, 
   rating, 
@@ -40,7 +40,7 @@ export default function ReviewCard({
       if (type === "up") {
         diff = vote === "down" ? 2 : 1;
       } else {
-        diff = vote === "up" ? -2 : -1;
+        diff = vote === "down" ? -2 : -1;
       }
       setCurrentUpvotes(prev => prev + diff);
       setVote(type);
@@ -52,18 +52,17 @@ export default function ReviewCard({
       <div className="flex justify-between items-start mb-3">
         <div>
           <div className="text-kk-blue-light font-bold text-sm mb-1">{course}</div>
-          <div className="text-kk-text-muted text-[11px] font-medium uppercase tracking-wider">{date}</div>
+          <div className="text-kk-text-muted text-[11px] font-medium uppercase tracking-wider">{date}</div>    
         </div>
         <div className="flex items-center gap-1 bg-kk-gold/10 text-kk-gold px-3 py-1 rounded-full font-bold text-sm">
           <Star size={14} fill="currentColor" />
           {rating}
         </div>
       </div>
-      
-      <p className="text-kk-text leading-relaxed font-medium mb-6 text-[15px]">
-        "{comment}"
-      </p>
 
+      <p className="text-kk-text leading-relaxed font-medium mb-6 text-[15px]">
+        &quot;{comment}&quot;
+      </p>
       {/* Detaylı Puanlar (Badge Tarzı) */}
       <div className="flex flex-wrap gap-2 mb-6">
         {[
