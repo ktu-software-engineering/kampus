@@ -50,15 +50,37 @@ export default function RegisterPage() {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
     if (name === "email") {
-      setEmailError(value && !value.endsWith(".edu.tr") ? "Lütfen geçerli bir .edu.tr e-posta adresi girin." : "");
+      setEmailError(value && !value.toLowerCase().endsWith("@ogr.ktu.edu.tr") ? "Lütfen KTÜ öğrenci e-postanızı girin. (örnek: 123456789@ogr.ktu.edu.tr)" : "");
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [serverError, setServerError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!passwordsMatch || !agreed || emailError) return;
     setLoading(true);
-    setTimeout(() => { setLoading(false); setSubmitted(true); }, 1600);
+    setServerError("");
+
+    const res = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: form.email,
+        password: form.password,
+        full_name: `${form.firstName} ${form.lastName}`.trim(),
+      }),
+    });
+
+    const data = await res.json();
+    setLoading(false);
+
+    if (!res.ok) {
+      setServerError(data.error ?? "Kayıt sırasında hata oluştu.");
+      return;
+    }
+
+    setSubmitted(true);
   };
 
   if (submitted) {
@@ -72,7 +94,7 @@ export default function RegisterPage() {
             </div>
             <h2 className="text-kk-blue text-[1.6rem] font-extrabold mb-2 tracking-tight">Kaydın Tamamlandı!</h2>
             <p className="text-kk-text-muted text-[0.95rem] leading-relaxed mb-8">
-              Hoş geldin, <span className="text-kk-blue font-bold">{form.firstName}</span>! Artık hocaları değerlendirebilirsin.
+              Hoş geldin, <span className="text-kk-blue font-bold">{form.firstName}</span>! E-posta adresine bir doğrulama linki gönderdik. Linke tıkladıktan sonra giriş yapabilirsin.
             </p>
             <Button
               onClick={() => router.push("/")}
@@ -103,6 +125,11 @@ export default function RegisterPage() {
             </div>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-4.5">
+              {serverError && (
+                <div className="bg-red-50 border border-red-200 text-red-700 text-[0.85rem] rounded-xl px-4 py-3">
+                  {serverError}
+                </div>
+              )}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-[0.82rem] font-semibold text-[#5c544d] ml-1">Ad</label>
@@ -162,7 +189,7 @@ export default function RegisterPage() {
                     className={`w-full pl-10 pr-3.5 py-3 bg-[#f5f1ea] border-[1.5px] text-kk-blue text-[0.875rem] rounded-xl outline-none transition-all focus:ring-4 focus:ring-kk-blue-light/10 ${
                       emailError ? "border-red-500 focus:border-red-500" : "border-[#e8e2d9] focus:border-kk-blue-light"
                     }`}
-                    placeholder="ogrenci@ktu.edu.tr"
+                    placeholder="ogrenciNo@ogr.ktu.edu.tr"
                   />
                 </div>
                 {emailError && <span className="text-[0.75rem] text-red-500 ml-1">{emailError}</span>}

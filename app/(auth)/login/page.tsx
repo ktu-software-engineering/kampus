@@ -15,6 +15,31 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await res.json();
+    setLoading(false);
+
+    if (!res.ok) {
+      setError(data.error ?? "Giriş başarısız.");
+      return;
+    }
+
+    router.push("/");
+    router.refresh();
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-kk-beige-dark font-['Inter',-apple-system,BlinkMacSystemFont,'Segoe_UI',sans-serif] relative overflow-x-hidden">
@@ -34,7 +59,12 @@ export default function LoginPage() {
               </p>
             </div>
 
-            <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-5">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+              {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 text-[0.85rem] rounded-xl px-4 py-3">
+                  {error}
+                </div>
+              )}
               <div className="flex flex-col gap-2">
                 <label className="text-[0.85rem] font-semibold text-[#5c544d] ml-1">
                   E-posta Adresi
@@ -43,7 +73,7 @@ export default function LoginPage() {
                   <Mail size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9a9287]" />
                   <input
                     type="email"
-                    placeholder="name@example.edu.tr"
+                    placeholder="ogrenciNo@ogr.ktu.edu.tr"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full pl-11 pr-3.5 py-3.5 bg-[#f5f1ea] border-[1.5px] border-[#e8e2d9] text-kk-blue text-[0.875rem] rounded-xl outline-none transition-all focus:border-kk-blue-light focus:ring-4 focus:ring-kk-blue-light/10"
@@ -94,9 +124,10 @@ export default function LoginPage() {
                 variant="kk-login"
                 size="unsized"
                 type="submit"
-                className="w-full py-3.5 rounded-xl text-[0.95rem] font-bold shadow-[0_10px_25px_rgba(29,58,82,0.2)] mt-2.5"
+                disabled={loading}
+                className="w-full py-3.5 rounded-xl text-[0.95rem] font-bold shadow-[0_10px_25px_rgba(29,58,82,0.2)] mt-2.5 disabled:opacity-60"
               >
-                Giriş Yap
+                {loading ? "Giriş yapılıyor..." : "Giriş Yap"}
               </Button>
             </form>
 
