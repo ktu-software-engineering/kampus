@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import ThemeToggle from "@/components/ThemeToggle";
 import { 
   LayoutDashboard, 
@@ -16,6 +16,12 @@ import {
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  async function handleLogout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    window.location.href = "/";
+  }
 
   return (
     <div className="flex h-screen bg-kk-beige-dark dark:bg-zinc-950 text-slate-800 dark:text-slate-300 font-sans transition-colors duration-500">
@@ -119,7 +125,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Settings size={20} />
             Ayarlar
           </Link>
-          <button className="flex items-center gap-3 px-4 py-3 w-full text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded font-medium transition-colors">
+          <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 w-full text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded font-medium transition-colors">
             <LogOut size={20} />
             Çıkış Yap
           </button>
