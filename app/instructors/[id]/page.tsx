@@ -47,7 +47,7 @@ const MOCK_INSTRUCTOR = {
   ]
 };
 
-export default function InstructorPage({ params }: { params: { id: string } }) {
+export default function InstructorPage() {
   const hoca = MOCK_INSTRUCTOR;
 
   return (

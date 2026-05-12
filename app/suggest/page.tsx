@@ -23,7 +23,7 @@ function SuggestFormContent() {
   useEffect(() => {
     const typeParam = searchParams.get("type") as SuggestType;
     if (typeParam && ["instructor", "course", "report"].includes(typeParam)) {
-      setType(typeParam);
+      setType(typeParam); // eslint-disable-line react-hooks/set-state-in-effect
     }
   }, [searchParams]);
 
