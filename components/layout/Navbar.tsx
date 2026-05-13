@@ -261,7 +261,7 @@ export function Navbar({ sidebarOpen = false, setSidebarOpen = () => {} }: Navba
                   variant="kk-nav"
                   size="unsized"
                   onClick={() => {
-                    if (item === "Hocalar") router.push("/");
+                    if (item === "Hocalar") router.push("/hocalar");
                   }}
                 >
                   {item}
