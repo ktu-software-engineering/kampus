@@ -1,0 +1,10 @@
+[auth]
+site_url = "https://kampuskarne.com"
+additional_redirect_urls = ["https://kampuskarne.com", "https://kampuskarne.com/sifre-sifirla", "http://localhost:3000/sifre-sifirla"]
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = true
+otp_length = 8
+otp_expiry = 3600
