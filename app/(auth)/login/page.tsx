@@ -1,19 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { BackgroundTexture } from "@/components/layout/BackgroundTexture";
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") ?? "/";
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [remember, setRemember] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -37,7 +38,7 @@ export default function LoginPage() {
       return;
     }
 
-    router.push("/");
+    router.push(redirectTo);
     router.refresh();
   }
 
@@ -73,7 +74,7 @@ export default function LoginPage() {
                   <Mail size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9a9287]" />
                   <input
                     type="email"
-                    placeholder="ogrenciNo@ogr.ktu.edu.tr"
+                    placeholder="ornek@gmail.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full pl-11 pr-3.5 py-3.5 bg-[#f5f1ea] border-[1.5px] border-[#e8e2d9] text-kk-blue text-[0.875rem] rounded-xl outline-none transition-all focus:border-kk-blue-light focus:ring-4 focus:ring-kk-blue-light/10"
@@ -105,17 +106,11 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between text-[0.82rem]">
-                <label className="flex items-center gap-2 cursor-pointer text-kk-text-muted">
-                  <input
-                    type="checkbox"
-                    checked={remember}
-                    onChange={(e) => setRemember(e.target.checked)}
-                    className="w-4 h-4 accent-kk-blue-light cursor-pointer"
-                  />
-                  Beni Hatırla
-                </label>
-                <span className="text-kk-blue-light font-semibold cursor-pointer hover:opacity-70 transition-opacity">
+              <div className="flex items-center justify-end text-[0.82rem]">
+                <span
+                  onClick={() => router.push("/sifremi-unuttum")}
+                  className="text-kk-blue-light font-semibold cursor-pointer hover:opacity-70 transition-opacity"
+                >
                   Şifremi Unuttum
                 </span>
               </div>
@@ -153,5 +148,13 @@ export default function LoginPage() {
         }
       `}</style>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginContent />
+    </Suspense>
   );
 }

@@ -1,11 +1,11 @@
-import { createClient } from "@/lib/supabase/server";
-import { isKtuStudentEmail } from "@/lib/auth";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { z } from "zod";
 
 const schema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
   full_name: z.string().min(2).max(100),
+  university_id: z.string().min(1),
 });
 
 export async function POST(req: Request) {
@@ -13,16 +13,25 @@ export async function POST(req: Request) {
   const parsed = schema.safeParse(body);
 
   if (!parsed.success) {
-    return Response.json({ error: "Geçersiz istek" }, { status: 400 });
+    const fields = parsed.error.issues.map(i => i.path[0]);
+    if (fields.includes("password")) {
+      return Response.json({ error: "Şifre en az 8 karakter olmalıdır." }, { status: 400 });
+    }
+    return Response.json({ error: "Lütfen tüm alanları eksiksiz doldurun." }, { status: 400 });
   }
 
-  const { email, password, full_name } = parsed.data;
+  const { email, password, full_name, university_id } = parsed.data;
 
-  if (!isKtuStudentEmail(email)) {
-    return Response.json(
-      { error: "Sadece KTÜ öğrenci e-postası kabul edilir. (örnek: 123456789@ogr.ktu.edu.tr)" },
-      { status: 400 }
-    );
+  // Email zaten kayıtlı mı kontrol et
+  const admin = createAdminClient();
+  const { data: existing } = await admin
+    .from("users")
+    .select("id")
+    .eq("email", email)
+    .single();
+
+  if (existing) {
+    return Response.json({ error: "Bu e-posta adresi zaten kayıtlı." }, { status: 409 });
   }
 
   const supabase = await createClient();
@@ -46,11 +55,9 @@ export async function POST(req: Request) {
     return Response.json({ error: "Kayıt sırasında hata oluştu." }, { status: 500 });
   }
 
-  // Trigger users tablosunu oluşturdu — full_name'i güncelle
+  // Trigger users tablosunu oluşturdu — full_name ve university_id'yi güncelle
   if (data.user) {
-    const { createAdminClient } = await import("@/lib/supabase/server");
-    const admin = createAdminClient();
-    await admin.from("users").update({ full_name }).eq("id", data.user.id);
+    await admin.from("users").update({ full_name, university_id }).eq("id", data.user.id);
   }
 
   return Response.json({ message: "Kayıt başarılı. E-postanı kontrol et." }, { status: 201 });

@@ -1,16 +1,20 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Eye, EyeOff, User, Mail, Lock, Building2, ChevronDown, Check } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { BackgroundTexture } from "@/components/layout/BackgroundTexture";
+import { createClient } from "@/lib/supabase/client";
+import { LegalModal } from "@/components/ui/LegalModal";
+import confetti from "canvas-confetti";
 
-const universities = [
-  "Karadeniz Teknik Üniversitesi",
-];
+interface University {
+  id: string;
+  name: string;
+}
 
 function PasswordStrength({ password }: { password: string }) {
   if (!password) return null;
@@ -41,8 +45,17 @@ export default function RegisterPage() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [emailError, setEmailError] = useState("");
-  const [form, setForm] = useState({ firstName: "", lastName: "", email: "", university: "", password: "", confirm: "" });
+  const [form, setForm] = useState({ firstName: "", lastName: "", email: "", university_id: "", password: "", confirm: "" });
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [universities, setUniversities] = useState<University[]>([]);
+  const [legalModal, setLegalModal] = useState<"terms" | "privacy" | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.from("universities").select("id, name").order("name").then(({ data }) => {
+      if (data) setUniversities(data);
+    });
+  }, []);
 
   const passwordsMatch = form.confirm === "" || form.password === form.confirm;
 
@@ -50,7 +63,7 @@ export default function RegisterPage() {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
     if (name === "email") {
-      setEmailError(value && !value.toLowerCase().endsWith("@ogr.ktu.edu.tr") ? "Lütfen KTÜ öğrenci e-postanızı girin. (örnek: 123456789@ogr.ktu.edu.tr)" : "");
+      setEmailError("");
     }
   };
 
@@ -69,6 +82,7 @@ export default function RegisterPage() {
         email: form.email,
         password: form.password,
         full_name: `${form.firstName} ${form.lastName}`.trim(),
+        university_id: form.university_id,
       }),
     });
 
@@ -81,6 +95,16 @@ export default function RegisterPage() {
     }
 
     setSubmitted(true);
+
+    // Konfeti — sitenin renkleriyle
+    const colors = ["#06283a", "#C8941A", "#006392", "#f0c875", "#0e4a6b"];
+    const burst = () => {
+      confetti({ particleCount: 60, spread: 80, origin: { y: 0.55 }, colors, scalar: 1.1 });
+      confetti({ particleCount: 40, spread: 120, origin: { y: 0.55 }, angle: 60, colors, scalar: 0.9 });
+      confetti({ particleCount: 40, spread: 120, origin: { y: 0.55 }, angle: 120, colors, scalar: 0.9 });
+    };
+    burst();
+    setTimeout(burst, 400);
   };
 
   if (submitted) {
@@ -111,6 +135,7 @@ export default function RegisterPage() {
   }
 
   return (
+    <>
     <div className="min-h-screen flex flex-col bg-kk-beige-dark font-['Inter',-apple-system,BlinkMacSystemFont,'Segoe_UI',sans-serif] relative overflow-x-hidden">
       <BackgroundTexture />
 
@@ -163,21 +188,21 @@ export default function RegisterPage() {
                 <div className="relative">
                   <Building2 size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9a9287] pointer-events-none" />
                   <select
-                    name="university"
+                    name="university_id"
                     required
-                    value={form.university}
+                    value={form.university_id}
                     onChange={handleChange}
                     className="w-full pl-10 pr-10 py-3 bg-[#f5f1ea] border-[1.5px] border-[#e8e2d9] text-kk-blue text-[0.875rem] rounded-xl outline-none appearance-none cursor-pointer focus:border-kk-blue-light focus:ring-4 focus:ring-kk-blue-light/10 transition-all"
                   >
                     <option value="" disabled>Üniversiteni Seç</option>
-                    {universities.map(u => <option key={u} value={u}>{u}</option>)}
+                    {universities.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
                   </select>
                   <ChevronDown size={18} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#9a9287] pointer-events-none" />
                 </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-[0.82rem] font-semibold text-[#5c544d] ml-1">E-posta (.edu.tr)</label>
+                <label className="text-[0.82rem] font-semibold text-[#5c544d] ml-1">E-posta</label>
                 <div className="relative">
                   <Mail size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9a9287]" />
                   <input
@@ -189,7 +214,7 @@ export default function RegisterPage() {
                     className={`w-full pl-10 pr-3.5 py-3 bg-[#f5f1ea] border-[1.5px] text-kk-blue text-[0.875rem] rounded-xl outline-none transition-all focus:ring-4 focus:ring-kk-blue-light/10 ${
                       emailError ? "border-red-500 focus:border-red-500" : "border-[#e8e2d9] focus:border-kk-blue-light"
                     }`}
-                    placeholder="ogrenciNo@ogr.ktu.edu.tr"
+                    placeholder="ornek@gmail.com"
                   />
                 </div>
                 {emailError && <span className="text-[0.75rem] text-red-500 ml-1">{emailError}</span>}
@@ -247,7 +272,10 @@ export default function RegisterPage() {
                   className="w-[17px] h-[17px] mt-0.5 accent-kk-blue-light cursor-pointer"
                 />
                 <span className="text-[0.82rem] text-kk-text-muted leading-relaxed">
-                  <span className="text-kk-blue-light font-semibold">Kullanım Koşulları</span> ve <span className="text-kk-blue-light font-semibold">Gizlilik Politikası</span>&apos;nı okudum, kabul ediyorum.
+                  <button type="button" onClick={() => setLegalModal("terms")} className="text-kk-blue-light font-semibold hover:underline">Kullanım Koşulları</button>
+                  {" "}ve{" "}
+                  <button type="button" onClick={() => setLegalModal("privacy")} className="text-kk-blue-light font-semibold hover:underline">Gizlilik Politikası</button>
+                  &apos;nı okudum, kabul ediyorum.
                 </span>
               </label>
 
@@ -255,7 +283,7 @@ export default function RegisterPage() {
                 type="submit"
                 variant="kk-login"
                 size="unsized"
-                disabled={loading || !agreed || !passwordsMatch || !!emailError}
+                disabled={loading || !agreed || !passwordsMatch || !!emailError || !form.university_id || form.password.length < 8}
                 className="w-full py-3.5 rounded-xl text-[0.95rem] font-bold shadow-[0_10px_25px_rgba(29,58,82,0.15)] mt-2 transition-all disabled:bg-gray-300"
               >
                 {loading ? "Hesabın Oluşturuluyor..." : "Kayıt Ol"}
@@ -284,5 +312,7 @@ export default function RegisterPage() {
         }
       `}</style>
     </div>
+    <LegalModal type={legalModal} onClose={() => setLegalModal(null)} />
+    </>
   );
 }

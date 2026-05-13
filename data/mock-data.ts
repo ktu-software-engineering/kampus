@@ -1,7 +1,7 @@
 export const CATEGORIES = [
   { emoji: "🎓", label: "Üniversite Ara", desc: "Türkiye genelinde keşfet" },
   { emoji: "👨‍🏫", label: "Hoca Ara", desc: "Akademisyenleri değerlendir" },
-  { emoji: "🗺️", label: "Şehre Göre", desc: "Yakınındaki kampüsleri gör" },
+  { emoji: "📚", label: "Ders Ara", desc: "Dersleri değerlendir" },
 ];
 
 export const RECENT_REVIEWS = [
