@@ -5,9 +5,28 @@ import InstructorContent from "@/components/instructor/InstructorContent";
 import { Star, GraduationCap, TrendingUp } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { notFound, redirect } from "next/navigation";
+import type { Metadata } from "next";
 
 interface PageProps {
   params: Promise<{ id: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params;
+  const supabase = await createClient();
+  const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+  const { data } = await supabase.from("instructors")
+    .select("full_name, title, average_rating, review_count")
+    .eq(isUUID ? "id" : "slug", id).single();
+  if (!data) return {};
+  const name = data.title ? `${data.title} ${data.full_name}` : data.full_name;
+  const desc = `${name} hakkında ${data.review_count} öğrenci yorumu. Ortalama puan: ${data.average_rating > 0 ? data.average_rating.toFixed(1) : "—"}/5.`;
+  return {
+    title: name,
+    description: desc,
+    openGraph: { title: `${name} | KampusKarne`, description: desc },
+    twitter: { title: `${name} | KampusKarne`, description: desc },
+  };
 }
 
 async function getInstructorData(id: string) {

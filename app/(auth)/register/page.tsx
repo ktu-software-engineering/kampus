@@ -214,7 +214,7 @@ export default function RegisterPage() {
                     className={`w-full pl-10 pr-3.5 py-3 bg-[#f5f1ea] border-[1.5px] text-kk-blue text-[0.875rem] rounded-xl outline-none transition-all focus:ring-4 focus:ring-kk-blue-light/10 ${
                       emailError ? "border-red-500 focus:border-red-500" : "border-[#e8e2d9] focus:border-kk-blue-light"
                     }`}
-                    placeholder="ornek@universite.edu.tr"
+                    placeholder="ornek@gmail.com"
                   />
                 </div>
                 {emailError && <span className="text-[0.75rem] text-red-500 ml-1">{emailError}</span>}

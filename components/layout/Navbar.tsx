@@ -107,6 +107,7 @@ export function Navbar({ sidebarOpen: externalOpen, setSidebarOpen: externalSet 
 
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" });
+    localStorage.removeItem("cookie_accepted");
     window.location.reload();
   }
 

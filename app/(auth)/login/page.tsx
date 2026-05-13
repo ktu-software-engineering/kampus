@@ -74,7 +74,7 @@ export default function LoginPage() {
                   <Mail size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9a9287]" />
                   <input
                     type="email"
-                    placeholder="ogrenciNo@ogr.ktu.edu.tr"
+                    placeholder="ornek@gmail.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full pl-11 pr-3.5 py-3.5 bg-[#f5f1ea] border-[1.5px] border-[#e8e2d9] text-kk-blue text-[0.875rem] rounded-xl outline-none transition-all focus:border-kk-blue-light focus:ring-4 focus:ring-kk-blue-light/10"

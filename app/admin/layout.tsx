@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import ThemeToggle from "@/components/ThemeToggle";
-import { LayoutDashboard, Users, GraduationCap, MessageSquare, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, GraduationCap, MessageSquare, LogOut, Star } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -23,6 +23,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" });
+    localStorage.removeItem("cookie_accepted");
     window.location.href = "/login";
   }
 
@@ -53,6 +54,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {navItem("/admin", <LayoutDashboard size={20} />, "Genel Bakış")}
           {navItem("/admin/users", <Users size={20} />, "Kullanıcı Yönetimi")}
           {navItem("/admin/instructors", <GraduationCap size={20} />, "Akademisyenler")}
+          {navItem("/admin/reviews", <Star size={20} />, "Yorumlar")}
           <p className="px-4 text-xs font-medium text-slate-400 dark:text-zinc-500 uppercase tracking-wider mb-2 mt-8">Geri Bildirimler</p>
           {navItem("/admin/reports", <MessageSquare size={20} />, "Şikayet & Öneriler", (pendingReports + pendingSuggestions) || undefined)}
         </nav>

@@ -195,13 +195,21 @@ function CookieModal({ onClose }: { onClose: () => void }) {
 }
 
 function CookieBanner() {
-  const [visible, setVisible] = React.useState(true);
+  const [visible, setVisible] = React.useState(false);
   const [showPolicy, setShowPolicy] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!localStorage.getItem("cookie_accepted")) setVisible(true);
+  }, []);
+
   if (!visible) return null;
+
+  const accept = () => { localStorage.setItem("cookie_accepted", "1"); setVisible(false); };
+  const reject = () => { localStorage.setItem("cookie_accepted", "0"); setVisible(false); };
   return (
     <>
       {showPolicy && <CookieModal onClose={() => setShowPolicy(false)} />}
-      <div className="fixed bottom-[90px] left-6 max-w-[340px] bg-kk-beige/97 backdrop-blur-[18px] border border-kk-blue/12 rounded-[18px] p-[18px_20px] z-[29] shadow-[0_8px_32px_-8px_rgba(6,40,58,0.18)] flex flex-col gap-3">
+      <div className="fixed bottom-[24px] left-6 max-w-[340px] bg-kk-beige/97 backdrop-blur-[18px] border border-kk-blue/12 rounded-[18px] p-[18px_20px] z-[29] shadow-[0_8px_32px_-8px_rgba(6,40,58,0.18)] flex flex-col gap-3">
         <div className="flex items-start gap-3">
           <span className="text-[22px] leading-none shrink-0">🍪</span>
           <p className="text-[12.5px] text-[#3d362e] leading-[1.6] m-0">
@@ -213,10 +221,10 @@ function CookieBanner() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="kk-login" size="unsized" onClick={() => setVisible(false)} className="flex-1 rounded-[10px] py-2 text-xs">
+          <Button variant="kk-login" size="unsized" onClick={accept} className="flex-1 rounded-[10px] py-2 text-xs">
             Kabul Et
           </Button>
-          <Button variant="kk-ghost-link" size="unsized" onClick={() => setVisible(false)}
+          <Button variant="kk-ghost-link" size="unsized" onClick={reject}
             className="flex-1 rounded-[10px] py-2 text-xs border border-kk-blue/15 text-kk-text-muted hover:text-kk-blue justify-center">
             Reddet
           </Button>
@@ -513,9 +521,6 @@ export default function HomePage() {
                       değerlendirmeler
                     </em>
                   </h2>
-                  <Button variant="kk-ghost-link" size="unsized">
-                    Tümünü gör <ArrowRight size={14} strokeWidth={2} />
-                  </Button>
                 </div>
 
                 <div className="flex flex-col gap-3.5">
