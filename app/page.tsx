@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   GraduationCap,
   Star,
@@ -9,6 +11,7 @@ import {
   MapPin,
   ArrowRight,
   PenLine,
+  Search,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FeedbackButton } from "@/components/FeedbackButton";
@@ -177,17 +180,96 @@ function CookieBanner() {
   );
 }
 
+interface InstructorResult {
+  id: string;
+  full_name: string;
+  title: string | null;
+  slug: string;
+  average_rating: number;
+  review_count: number;
+}
+
 export default function HomePage() {
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
+  const [results, setResults] = useState<InstructorResult[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const [dropdownRect, setDropdownRect] = useState<DOMRect | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const closeDropdown = useCallback(() => {
+    if (!showDropdown) return;
+    setIsClosing(true);
+    setTimeout(() => { setIsClosing(false); setShowDropdown(false); }, 200);
+  }, [showDropdown]);
+
+  const fetchResults = useCallback(async (q: string) => {
+    if (q.trim().length < 2) { setResults([]); closeDropdown(); return; }
+    const res = await fetch(`/api/instructors?q=${encodeURIComponent(q)}&limit=5`);
+    const data = await res.json();
+    setResults(data);
+    if (data.length > 0) {
+      if (formRef.current) setDropdownRect(formRef.current.getBoundingClientRect());
+      setShowDropdown(true);
+      setIsClosing(false);
+    } else {
+      closeDropdown();
+    }
+    setActiveIndex(-1);
+  }, [closeDropdown]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setSearchQuery(val);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => fetchResults(val), 280);
+  };
+
+  const handleSelect = (instructor: InstructorResult) => {
+    closeDropdown();
+    setSearchQuery("");
+    router.push(`/instructors/${instructor.slug}`);
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    if (activeIndex >= 0 && results[activeIndex]) handleSelect(results[activeIndex]);
+    else if (results.length > 0) handleSelect(results[0]);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!showDropdown) return;
+    if (e.key === "ArrowDown") { e.preventDefault(); setActiveIndex(i => Math.min(i + 1, results.length - 1)); }
+    if (e.key === "ArrowUp")   { e.preventDefault(); setActiveIndex(i => Math.max(i - 1, -1)); }
+    if (e.key === "Escape")    { closeDropdown(); setActiveIndex(-1); }
+  };
+
+  // Scroll'da pozisyonu güncelle
+  useEffect(() => {
+    if (!showDropdown) return;
+    const update = () => { if (formRef.current) setDropdownRect(formRef.current.getBoundingClientRect()); };
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => { window.removeEventListener("scroll", update); window.removeEventListener("resize", update); };
+  }, [showDropdown]);
+
+  // Dışarı tıklayınca kapat
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (!formRef.current?.contains(e.target as Node)) closeDropdown();
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [closeDropdown]);
+
   return (
+    <>
     <div className="min-h-screen bg-kk-beige font-['Inter',-apple-system,BlinkMacSystemFont,'Segoe_UI',sans-serif] relative overflow-x-hidden text-kk-text">
       <style>{`
         .display-serif {
@@ -235,15 +317,21 @@ export default function HomePage() {
               </p>
 
               <form
+                ref={formRef}
                 onSubmit={handleSearch}
                 className="max-w-[600px] mx-auto relative"
+                autoComplete="off"
+                style={{
+                  transition: "transform 0.3s cubic-bezier(0.34,1.56,0.64,1)",
+                  transform: searchFocused ? "scale(1.025)" : "scale(1)",
+                }}
               >
-                <div className={`flex items-center backdrop-blur-[20px] rounded-full border-[1.5px] transition-all duration-300 pl-6 pr-2 py-1.5 h-[62px] ${
-                  searchFocused 
-                    ? "bg-[rgba(255,253,248,0.92)] border-[rgba(6,40,58,0.45)] shadow-[0_16px_48px_-16px_rgba(6,40,58,0.28),0_2px_8px_-2px_rgba(6,40,58,0.1)]" 
+                <div className={`flex items-center backdrop-blur-[20px] rounded-full border-[1.5px] transition-all duration-300 pl-6 pr-4 py-1.5 h-[62px] ${
+                  searchFocused
+                    ? "bg-[rgba(255,253,248,0.92)] border-[rgba(6,40,58,0.45)] shadow-[0_16px_48px_-16px_rgba(6,40,58,0.28),0_2px_8px_-2px_rgba(6,40,58,0.1)]"
                     : "bg-[rgba(255,253,248,0.78)] border-[rgba(255,255,255,0.75)] shadow-[0_8px_32px_-12px_rgba(6,40,58,0.18),0_2px_8px_-4px_rgba(6,40,58,0.06)]"
                 }`}>
-                  <GraduationCap
+                  <Search
                     size={20}
                     strokeWidth={1.75}
                     className={`shrink-0 transition-colors duration-200 ${searchFocused ? "text-kk-blue" : "text-[#8b8374]"}`}
@@ -253,16 +341,12 @@ export default function HomePage() {
                     className="kk-search-input flex-1 border-none outline-none bg-transparent py-3 px-4 text-base text-kk-blue font-inherit"
                     type="text"
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onFocus={() => setSearchFocused(true)}
+                    onChange={handleChange}
+                    onFocus={() => { setSearchFocused(true); if (results.length > 0) setShowDropdown(true); }}
                     onBlur={() => setSearchFocused(false)}
-                    placeholder="Üniversite, hoca veya bölüm ara"
+                    onKeyDown={handleKeyDown}
+                    placeholder="Hoca adı ara..."
                   />
-                  {searchQuery.trim().length > 0 && (
-                    <Button type="submit" variant="kk-search-submit" size="unsized">
-                      Ara <ArrowRight size={14} strokeWidth={2.25} />
-                    </Button>
-                  )}
                 </div>
               </form>
             </div>
@@ -497,5 +581,69 @@ export default function HomePage() {
         }
       `}</style>
     </div>
+
+    {/* Arama dropdown — portal ile body'ye render edilir, overflow:hidden'dan etkilenmez */}
+    {(showDropdown || isClosing) && dropdownRect && typeof document !== "undefined" && createPortal(
+      <>
+        <style>{`
+          @keyframes kk-search-in  { from { opacity:0; transform:translateY(-6px) scale(0.98); } to { opacity:1; transform:translateY(0) scale(1); } }
+          @keyframes kk-search-out { from { opacity:1; transform:translateY(0) scale(1); } to { opacity:0; transform:translateY(-6px) scale(0.98); } }
+        `}</style>
+        <div
+          style={{
+            position: "fixed",
+            top: dropdownRect.bottom + 8,
+            left: dropdownRect.left,
+            width: dropdownRect.width,
+            zIndex: 9999,
+            borderRadius: 16,
+            overflow: "hidden",
+            background: "rgba(255,253,248,0.98)",
+            backdropFilter: "blur(24px)",
+            WebkitBackdropFilter: "blur(24px)",
+            border: "1.5px solid rgba(6,40,58,0.12)",
+            boxShadow: "0 24px 56px -12px rgba(6,40,58,0.24), 0 4px 16px -4px rgba(6,40,58,0.1)",
+            animation: isClosing
+              ? "kk-search-out 200ms cubic-bezier(0.4,0,1,1) forwards"
+              : "kk-search-in 220ms cubic-bezier(0,0,0.2,1) forwards",
+          }}
+        >
+          {results.map((instructor, i) => (
+            <button
+              key={instructor.id}
+              type="button"
+              onMouseDown={() => handleSelect(instructor)}
+              onMouseEnter={e => (e.currentTarget.style.background = "rgba(6,40,58,0.09)")}
+              onMouseLeave={e => (e.currentTarget.style.background = i === activeIndex ? "rgba(6,40,58,0.06)" : "transparent")}
+              className="w-full flex items-center gap-3 px-5 py-3.5 text-left transition-colors cursor-pointer"
+              style={{
+                background: i === activeIndex ? "rgba(6,40,58,0.06)" : "transparent",
+                borderBottom: i < results.length - 1 ? "1px solid rgba(6,40,58,0.06)" : "none",
+              }}
+            >
+              <div className="w-8 h-8 rounded-lg bg-kk-blue/10 flex items-center justify-center shrink-0">
+                <GraduationCap size={16} className="text-kk-blue" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-kk-blue font-semibold text-sm truncate">
+                  {instructor.title ? `${instructor.title} ${instructor.full_name}` : instructor.full_name}
+                </div>
+                {instructor.review_count > 0 && (
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <Star size={11} className="text-kk-gold" fill="currentColor" />
+                    <span className="text-[11px] text-kk-text-muted font-medium">
+                      {instructor.average_rating.toFixed(1)} · {instructor.review_count} yorum
+                    </span>
+                  </div>
+                )}
+              </div>
+              <ArrowRight size={14} className="text-kk-text-muted shrink-0 opacity-40" />
+            </button>
+          ))}
+        </div>
+      </>,
+      document.body
+    )}
+    </>
   );
 }

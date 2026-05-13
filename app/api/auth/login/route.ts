@@ -16,7 +16,7 @@ export async function POST(req: Request) {
   const parsed = schema.safeParse(body);
 
   if (!parsed.success) {
-    return Response.json({ error: "Geçersiz istek" }, { status: 400 });
+    return Response.json({ error: "Lütfen geçerli bir e-posta adresi girin." }, { status: 400 });
   }
 
   const { email, password } = parsed.data;

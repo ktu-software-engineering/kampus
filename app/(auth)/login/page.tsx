@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,8 @@ import { BackgroundTexture } from "@/components/layout/BackgroundTexture";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") ?? "/";
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -36,7 +38,7 @@ export default function LoginPage() {
       return;
     }
 
-    router.push("/");
+    router.push(redirectTo);
     router.refresh();
   }
 

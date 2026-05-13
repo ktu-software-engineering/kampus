@@ -30,7 +30,7 @@ export function Navbar({ sidebarOpen = false, setSidebarOpen = () => {} }: Navba
 
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" });
-    window.location.href = "/";
+    window.location.reload();
   }
 
   function getInitials(name: string | null) {
@@ -160,7 +160,7 @@ export function Navbar({ sidebarOpen = false, setSidebarOpen = () => {} }: Navba
 
           <nav className="flex items-center gap-2 pt-1.5">
             <div className="desktop-nav-links flex items-center gap-1">
-              {["Hocalar", "Hakkımızda"].map((item) => (
+              {["Hocalar"].map((item) => (
                 <Button
                   key={item}
                   variant="kk-nav"
@@ -217,7 +217,10 @@ export function Navbar({ sidebarOpen = false, setSidebarOpen = () => {} }: Navba
                       variant="kk-login"
                       size="unsized"
                       className="login-btn"
-                      onClick={() => router.push("/login")}
+                      onClick={() => {
+                        const redirect = pathname && pathname !== "/" ? `?redirect=${encodeURIComponent(pathname)}` : "";
+                        router.push(`/login${redirect}`);
+                      }}
                     >
                       <span className="login-text">Giriş Yap</span>
                     </Button>

@@ -15,22 +15,27 @@ export async function POST(
   const admin = createAdminClient();
 
   const { data: existing } = await admin
-    .from("review_upvotes")
+    .from("review_downvotes")
     .select("review_id")
     .eq("review_id", reviewId)
     .eq("user_id", user.id)
     .single();
 
   if (existing) {
-    await admin.from("review_upvotes").delete()
+    await admin.from("review_downvotes").delete()
       .eq("review_id", reviewId)
       .eq("user_id", user.id);
-    return Response.json({ upvoted: false });
+    return Response.json({ downvoted: false });
   }
 
-  await admin.from("review_upvotes").insert({
-    review_id: reviewId,
-    user_id: user.id,
-  });
-  return Response.json({ upvoted: true });
+  const { error: insertError } = await admin
+    .from("review_downvotes")
+    .insert({ review_id: reviewId, user_id: user.id });
+
+  if (insertError) {
+    console.error("[downvote] insert error:", insertError.message, insertError.details);
+    return Response.json({ error: insertError.message }, { status: 500 });
+  }
+
+  return Response.json({ downvoted: true });
 }
