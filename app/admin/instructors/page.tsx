@@ -62,7 +62,7 @@ export default function InstructorsPage() {
         <button type="submit" className="px-4 py-2.5 bg-kk-blue text-white rounded-lg text-sm font-semibold hover:opacity-90 cursor-pointer">Ara</button>
       </form>
 
-      <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-xl overflow-hidden shadow-sm"><div className="overflow-x-auto">
         {loading ? <div className="text-center py-12 text-slate-400 text-sm">Yükleniyor...</div> : (
           <table className="w-full text-sm">
             <thead className="bg-slate-50 dark:bg-zinc-800/50 border-b border-slate-200 dark:border-zinc-800">
@@ -109,7 +109,7 @@ export default function InstructorsPage() {
             </tbody>
           </table>
         )}
-      </div>
+      </div></div>
 
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2">
