@@ -22,14 +22,21 @@ export async function POST(req: Request) {
   const { email, password } = parsed.data;
   const admin = createAdminClient();
 
-  // Hesap kilitli mi kontrol et
+  // Hesap var mı + kilitli mi kontrol et
   const { data: profile } = await admin
     .from("users")
     .select("locked_until, failed_login_count")
     .eq("email", email)
     .single();
 
-  if (profile?.locked_until && new Date(profile.locked_until) > new Date()) {
+  if (!profile) {
+    return Response.json(
+      { error: "Bu e-posta adresiyle kayıtlı bir hesap bulunamadı." },
+      { status: 404 }
+    );
+  }
+
+  if (profile.locked_until && new Date(profile.locked_until) > new Date()) {
     return Response.json(
       { error: "Hesabın kilitli. 15 dakika sonra tekrar dene." },
       { status: 429 }
@@ -71,7 +78,7 @@ export async function POST(req: Request) {
       await admin.from("users").update(updates).eq("email", email);
     }
 
-    return Response.json({ error: "E-posta veya şifre hatalı." }, { status: 401 });
+    return Response.json({ error: "Şifreniz hatalı. Lütfen tekrar deneyin." }, { status: 401 });
   }
 
   // Başarılı giriş — sayacı sıfırla

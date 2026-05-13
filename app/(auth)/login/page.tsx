@@ -13,7 +13,6 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [remember, setRemember] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -105,16 +104,7 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between text-[0.82rem]">
-                <label className="flex items-center gap-2 cursor-pointer text-kk-text-muted">
-                  <input
-                    type="checkbox"
-                    checked={remember}
-                    onChange={(e) => setRemember(e.target.checked)}
-                    className="w-4 h-4 accent-kk-blue-light cursor-pointer"
-                  />
-                  Beni Hatırla
-                </label>
+              <div className="flex items-center justify-end text-[0.82rem]">
                 <span className="text-kk-blue-light font-semibold cursor-pointer hover:opacity-70 transition-opacity">
                   Şifremi Unuttum
                 </span>
