@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Navbar } from "@/components/layout/Navbar";
@@ -8,7 +8,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { BackgroundTexture } from "@/components/layout/BackgroundTexture";
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") ?? "/";
@@ -148,5 +148,13 @@ export default function LoginPage() {
         }
       `}</style>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginContent />
+    </Suspense>
   );
 }
