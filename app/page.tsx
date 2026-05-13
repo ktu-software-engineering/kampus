@@ -189,10 +189,22 @@ interface InstructorResult {
   review_count: number;
 }
 
+interface RecentReview {
+  id: string; rating: number; comment: string; created_at: string;
+  instructor: { id: string; full_name: string; title: string | null; slug: string } | null;
+  course: { name: string; code: string } | null;
+}
+interface TrendingInstructor {
+  id: string; full_name: string; title: string | null; slug: string;
+  average_rating: number; review_count: number; week_reviews: number;
+}
+
 export default function HomePage() {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [recentReviews, setRecentReviews] = useState<RecentReview[]>([]);
+  const [trending, setTrending] = useState<TrendingInstructor[]>([]);
   const [searchFocused, setSearchFocused] = useState(false);
   const [results, setResults] = useState<InstructorResult[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -267,6 +279,12 @@ export default function HomePage() {
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, [closeDropdown]);
+
+  // Gerçek veri: son yorumlar + trend
+  useEffect(() => {
+    fetch("/api/reviews/recent").then(r => r.json()).then(d => Array.isArray(d) && setRecentReviews(d));
+    fetch("/api/instructors/trending").then(r => r.json()).then(d => Array.isArray(d) && setTrending(d));
+  }, []);
 
   return (
     <>
@@ -447,35 +465,46 @@ export default function HomePage() {
                 </div>
 
                 <div className="flex flex-col gap-3.5">
-                  {RECENT_REVIEWS.map((review) => (
+                  {recentReviews.length === 0 ? (
+                    <div className="text-kk-text-muted text-sm text-center py-10">Henüz değerlendirme yok.</div>
+                  ) : recentReviews.map((review) => (
                     <div
                       key={review.id}
-                      className="relative bg-[#FFfdf8]/45 rounded-[20px] py-[22px] px-6 border border-white/60 shadow-[0_6px_28px_-12px_rgba(6,40,58,0.10),inset_0_1px_0_rgba(255,255,255,0.75)] cursor-pointer transition-all duration-250 overflow-hidden hover:-translate-y-[3px] hover:shadow-[0_18px_44px_-14px_rgba(6,40,58,0.18),inset_0_1px_0_rgba(255,255,255,0.9)] hover:border-[#009992]/28 hover:bg-[#FFfdf8]/60"
+                      onClick={() => review.instructor && router.push(`/instructors/${review.instructor.slug}`)}
+                      className="relative bg-[#FFfdf8]/80 rounded-[20px] py-[22px] px-6 border border-white/80 shadow-[0_6px_28px_-12px_rgba(6,40,58,0.10),inset_0_1px_0_rgba(255,255,255,0.75)] cursor-pointer transition-all duration-250 overflow-hidden hover:-translate-y-[3px] hover:shadow-[0_18px_44px_-14px_rgba(6,40,58,0.18),inset_0_1px_0_rgba(255,255,255,0.9)] hover:border-[#009992]/28 hover:bg-[#FFfdf8]/90"
                     >
                       <div className="relative flex justify-between items-start mb-3 gap-3">
                         <div className="flex-1 min-w-0">
                           <h3 className="display-serif text-[18px] font-semibold text-kk-blue m-0 mb-2 tracking-[-0.01em]">
-                            {review.professor}
+                            {review.instructor
+                              ? (review.instructor.title
+                                  ? `${review.instructor.title} ${review.instructor.full_name}`
+                                  : review.instructor.full_name)
+                              : "Bilinmeyen Hoca"}
                           </h3>
-                          <div className="flex items-center gap-2.5 flex-wrap">
+                          {review.course && (
                             <span className="bg-kk-blue-light/10 text-kk-blue-light py-[3px] px-[11px] rounded-[20px] text-[11px] font-semibold tracking-[0.01em] border border-kk-blue-light/18">
-                              {review.department}
+                              {review.course.code} — {review.course.name}
                             </span>
-                            <span className="text-[11px] text-[#8b8374] inline-flex items-center gap-1">
-                              <MapPin size={11} strokeWidth={2} />
-                              {review.city}
-                            </span>
-                          </div>
+                          )}
                         </div>
                         <div className="text-right shrink-0">
-                          <StarRating value={review.rating} />
-                          <p className="text-[10.5px] text-[#a8a090] m-0 mt-[5px] tracking-[0.01em]">
-                            {review.time}
+                          <div className="flex items-center gap-1 justify-end mb-1">
+                            {[1,2,3,4,5].map(s => (
+                              <Star key={s} size={17}
+                                fill={s <= Math.round(review.rating) ? "var(--color-kk-gold)" : "transparent"}
+                                color={s <= Math.round(review.rating) ? "var(--color-kk-gold)" : "#c9c2b5"}
+                              />
+                            ))}
+                            <span className="text-[14px] font-bold text-kk-gold ml-1">{review.rating}</span>
+                          </div>
+                          <p className="text-[10.5px] text-[#a8a090] m-0 mt-[3px] tracking-[0.01em]">
+                            {new Date(review.created_at).toLocaleDateString("tr-TR", { day:"numeric", month:"long" })}
                           </p>
                         </div>
                       </div>
                       <p className="display-serif relative text-[15px] text-[#3d362e] leading-[1.65] m-0 italic font-normal border-t border-kk-blue/05 pt-3">
-                        &ldquo;{review.review}&rdquo;
+                        &ldquo;{review.comment}&rdquo;
                       </p>
                     </div>
                   ))}
@@ -495,17 +524,20 @@ export default function HomePage() {
                 </div>
 
                 <div className="bg-[#FFfdf8]/45 rounded-[20px] overflow-hidden border border-white/60 shadow-[0_6px_28px_-12px_rgba(6,40,58,0.10),inset_0_1px_0_rgba(255,255,255,0.75)]">
-                  {TRENDING_PROFESSORS.map((item, idx) => (
+                  {trending.length === 0 ? (
+                    <div className="text-kk-text-muted text-sm text-center py-8">Henüz veri yok.</div>
+                  ) : trending.map((item, idx) => (
                     <div
-                      key={item.name}
+                      key={item.id}
+                      onClick={() => router.push(`/instructors/${item.slug}`)}
                       className="py-4 px-5 flex items-center gap-3.5 border-b border-kk-blue/07 last:border-none cursor-pointer transition-colors duration-200 hover:bg-kk-blue-light/06"
                     >
                       <div
                         className={`display-serif w-8 h-8 rounded-full flex items-center justify-center text-[14px] font-bold shrink-0 ${
-                          idx === 0 
-                            ? "bg-gradient-to-br from-kk-blue to-kk-blue-light text-kk-beige shadow-[0_3px_10px_-2px_rgba(6,40,58,0.3)]" 
-                            : idx === 1 
-                              ? "bg-kk-blue-light/14 text-kk-blue" 
+                          idx === 0
+                            ? "bg-gradient-to-br from-kk-blue to-kk-blue-light text-kk-beige shadow-[0_3px_10px_-2px_rgba(6,40,58,0.3)]"
+                            : idx === 1
+                              ? "bg-kk-blue-light/14 text-kk-blue"
                               : "bg-kk-blue/07 text-kk-blue"
                         }`}
                       >
@@ -513,29 +545,22 @@ export default function HomePage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-[13.5px] font-semibold text-kk-blue m-0 mb-[3px] overflow-hidden text-ellipsis whitespace-nowrap">
-                          {item.name}
+                          {item.title ? `${item.title} ${item.full_name}` : item.full_name}
                         </p>
                         <div className="flex items-center gap-1.5 text-[11px] text-kk-text-muted">
-                          <span>{item.field}</span>
-                          <span className="text-[#c0b7a6]">·</span>
-                          <span>{item.university}</span>
+                          <span>{item.review_count} yorum</span>
                         </div>
                       </div>
                       <div className="flex flex-col items-end gap-[2px] shrink-0">
-                        <StarRating value={item.rating} />
+                        {item.average_rating > 0 && <StarRating value={item.average_rating} />}
                         <div className="flex items-center gap-[3px]">
                           <TrendingUp size={10} color="#2f8c4f" strokeWidth={2.5} />
-                          <span className="text-[10.5px] text-[#2f8c4f] font-bold">{item.trend}</span>
+                          <span className="text-[10.5px] text-[#2f8c4f] font-bold">+{item.week_reviews} bu hafta</span>
                         </div>
                       </div>
                     </div>
                   ))}
 
-                  <div className="py-3 px-5 pb-3.5 border-t border-kk-blue/07">
-                    <Button variant="kk-ghost-link" size="unsized" className="w-full justify-center py-2">
-                      Tüm Sıralamayı Gör <ArrowRight size={14} strokeWidth={2} />
-                    </Button>
-                  </div>
                 </div>
               </div>
             </div>

@@ -1,11 +1,21 @@
 "use client";
 
-import React from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
-import { ArrowRight, LogOut } from "lucide-react";
+import { ArrowRight, LogOut, Search, Star, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+
+interface InstructorResult {
+  id: string;
+  full_name: string;
+  title: string | null;
+  slug: string;
+  average_rating: number;
+  review_count: number;
+}
 
 const siteLogo = "/images/site_logo-1.png";
 
@@ -27,6 +37,68 @@ export function Navbar({ sidebarOpen = false, setSidebarOpen = () => {} }: Navba
   const isLoginPage = pathname === "/login";
   const isRegisterPage = pathname === "/register";
   const isSettingsPage = pathname?.startsWith("/settings");
+
+  // ── Navbar arama
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<InstructorResult[]>([]);
+  const [showDrop, setShowDrop] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const [dropRect, setDropRect] = useState<DOMRect | null>(null);
+  const [activeIdx, setActiveIdx] = useState(-1);
+  const searchRef = useRef<HTMLFormElement>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const closeDrop = useCallback(() => {
+    if (!showDrop) return;
+    setIsClosing(true);
+    setTimeout(() => { setIsClosing(false); setShowDrop(false); }, 180);
+  }, [showDrop]);
+
+  const fetchResults = useCallback(async (q: string) => {
+    if (q.trim().length < 2) { setResults([]); closeDrop(); return; }
+    const res = await fetch(`/api/instructors?q=${encodeURIComponent(q)}&limit=5`);
+    const data = await res.json();
+    setResults(data);
+    if (data.length > 0) {
+      if (searchRef.current) setDropRect(searchRef.current.getBoundingClientRect());
+      setShowDrop(true); setIsClosing(false);
+    } else closeDrop();
+    setActiveIdx(-1);
+  }, [closeDrop]);
+
+  const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const v = e.target.value;
+    setQuery(v);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => fetchResults(v), 280);
+  };
+
+  const handleSelect = (ins: InstructorResult) => {
+    closeDrop(); setQuery("");
+    router.push(`/instructors/${ins.slug}`);
+  };
+
+  const handleSearchKey = (e: React.KeyboardEvent) => {
+    if (!showDrop) return;
+    if (e.key === "ArrowDown") { e.preventDefault(); setActiveIdx(i => Math.min(i+1, results.length-1)); }
+    if (e.key === "ArrowUp")   { e.preventDefault(); setActiveIdx(i => Math.max(i-1, -1)); }
+    if (e.key === "Escape")    { closeDrop(); }
+    if (e.key === "Enter")     { e.preventDefault(); if (activeIdx >= 0 && results[activeIdx]) handleSelect(results[activeIdx]); else if (results[0]) handleSelect(results[0]); }
+  };
+
+  useEffect(() => {
+    if (!showDrop) return;
+    const upd = () => { if (searchRef.current) setDropRect(searchRef.current.getBoundingClientRect()); };
+    window.addEventListener("scroll", upd, { passive: true });
+    window.addEventListener("resize", upd);
+    return () => { window.removeEventListener("scroll", upd); window.removeEventListener("resize", upd); };
+  }, [showDrop]);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => { if (!searchRef.current?.contains(e.target as Node)) closeDrop(); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [closeDrop]);
 
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -129,7 +201,7 @@ export function Navbar({ sidebarOpen = false, setSidebarOpen = () => {} }: Navba
 
       {/* Header */}
       <header className="kk-header sticky top-0 z-[20] bg-transparent py-4 pr-12 pl-2">
-        <div className="w-full flex items-start justify-between gap-5">
+        <div className="w-full flex items-center justify-between gap-4">
           <div className="kk-logo-group flex flex-row items-center gap-[10px]">
             <Image
               src={siteLogo}
@@ -157,6 +229,29 @@ export function Navbar({ sidebarOpen = false, setSidebarOpen = () => {} }: Navba
               </Button>
             )}
           </div>
+
+          {/* ── Orta: Arama */}
+          {mounted && !isLoginPage && !isRegisterPage && pathname !== "/" && (
+            <form
+              ref={searchRef}
+              onSubmit={e => e.preventDefault()}
+              autoComplete="off"
+              className="flex-1 max-w-[420px] min-w-0 hidden md:block"
+            >
+              <div className="flex items-center bg-white/70 backdrop-blur-md border border-[rgba(6,40,58,0.12)] rounded-full px-4 h-[40px] gap-2 transition-all duration-200 focus-within:border-[rgba(6,40,58,0.35)] focus-within:shadow-[0_4px_16px_-4px_rgba(6,40,58,0.15)]">
+                <Search size={15} className="text-[#8b8374] shrink-0" />
+                <input
+                  type="text"
+                  value={query}
+                  onChange={handleQueryChange}
+                  onKeyDown={handleSearchKey}
+                  onFocus={() => results.length > 0 && setShowDrop(true)}
+                  placeholder="Hoca ara..."
+                  className="flex-1 min-w-0 bg-transparent outline-none text-[13px] text-kk-blue placeholder:text-[#a8a090]"
+                />
+              </div>
+            </form>
+          )}
 
           <nav className="flex items-center gap-2 pt-1.5">
             <div className="desktop-nav-links flex items-center gap-1">
@@ -231,6 +326,66 @@ export function Navbar({ sidebarOpen = false, setSidebarOpen = () => {} }: Navba
           </nav>
         </div>
       </header>
+
+      {/* Arama dropdown — portal */}
+      {(showDrop || isClosing) && dropRect && typeof document !== "undefined" && createPortal(
+        <>
+          <style>{`
+            @keyframes kk-nav-drop-in  { from{opacity:0;transform:translateY(-4px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)} }
+            @keyframes kk-nav-drop-out { from{opacity:1;transform:translateY(0) scale(1)}to{opacity:0;transform:translateY(-4px) scale(0.98)} }
+          `}</style>
+          <div
+            style={{
+              position: "fixed",
+              top: dropRect.bottom + 6,
+              left: dropRect.left,
+              width: dropRect.width,
+              zIndex: 9999,
+              borderRadius: 14,
+              overflow: "hidden",
+              background: "rgba(255,253,248,0.98)",
+              backdropFilter: "blur(20px)",
+              border: "1.5px solid rgba(6,40,58,0.12)",
+              boxShadow: "0 16px 40px -8px rgba(6,40,58,0.2)",
+              animation: isClosing
+                ? "kk-nav-drop-out 180ms ease forwards"
+                : "kk-nav-drop-in 200ms cubic-bezier(0,0,0.2,1) forwards",
+            }}
+          >
+            {results.map((ins, i) => (
+              <button
+                key={ins.id}
+                type="button"
+                onMouseDown={() => handleSelect(ins)}
+                onMouseEnter={e => (e.currentTarget.style.background = "rgba(6,40,58,0.07)")}
+                onMouseLeave={e => (e.currentTarget.style.background = i === activeIdx ? "rgba(6,40,58,0.06)" : "transparent")}
+                className="w-full flex items-center gap-3 px-4 py-3 text-left cursor-pointer transition-colors"
+                style={{
+                  background: i === activeIdx ? "rgba(6,40,58,0.06)" : "transparent",
+                  borderBottom: i < results.length - 1 ? "1px solid rgba(6,40,58,0.06)" : "none",
+                }}
+              >
+                <div className="w-7 h-7 rounded-lg bg-kk-blue/10 flex items-center justify-center shrink-0">
+                  <GraduationCap size={14} className="text-kk-blue" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-kk-blue font-semibold text-[13px] truncate">
+                    {ins.title ? `${ins.title} ${ins.full_name}` : ins.full_name}
+                  </div>
+                  {ins.review_count > 0 && (
+                    <div className="flex items-center gap-1 mt-0.5">
+                      <Star size={10} className="text-kk-gold" fill="currentColor" />
+                      <span className="text-[11px] text-kk-text-muted">{ins.average_rating.toFixed(1)} · {ins.review_count} yorum</span>
+                    </div>
+                  )}
+                </div>
+                <ArrowRight size={13} className="text-kk-text-muted opacity-40 shrink-0" />
+              </button>
+            ))}
+          </div>
+        </>,
+        document.body
+      )}
     </>
   );
 }
