@@ -1,5 +1,4 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server";
-import { isKtuStudentEmail } from "@/lib/auth";
 import { z } from "zod";
 
 const schema = z.object({
@@ -22,13 +21,6 @@ export async function POST(req: Request) {
   }
 
   const { email, password, full_name, university_id } = parsed.data;
-
-  if (!isKtuStudentEmail(email)) {
-    return Response.json(
-      { error: "Sadece KTÜ öğrenci e-postası kabul edilir. (örnek: 123456789@ogr.ktu.edu.tr)" },
-      { status: 400 }
-    );
-  }
 
   // Email zaten kayıtlı mı kontrol et
   const admin = createAdminClient();

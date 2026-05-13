@@ -99,6 +99,26 @@ export default async function InstructorPage({ params }: PageProps) {
 
   if (!data) notFound();
 
+  // Gizlenmiş hoca — istek üzerine kaldırıldı sayfası
+  if (!data.instructor.is_active) {
+    return (
+      <div className="min-h-screen flex flex-col bg-kk-beige relative overflow-x-hidden font-sans">
+        <BackgroundTexture />
+        <Navbar />
+        <main className="flex-grow relative z-10 flex items-center justify-center px-4">
+          <div className="text-center max-w-md">
+            <div className="w-20 h-20 rounded-2xl bg-kk-blue/10 flex items-center justify-center mx-auto mb-6">
+              <GraduationCap size={40} className="text-kk-blue/40" />
+            </div>
+            <h1 className="text-2xl font-bold text-kk-blue mb-3">Profil Kaldırıldı</h1>
+            <p className="text-kk-text-muted leading-relaxed">Bu akademisyen profili istek üzerine siteden kaldırılmıştır.</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   // UUID ile girilmişse slug URL'e yönlendir
   const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
   if (isUUID && data.instructor.slug) {
@@ -159,7 +179,7 @@ export default async function InstructorPage({ params }: PageProps) {
           <div className="bg-[rgba(255,253,248,0.72)] backdrop-blur-xl border border-[rgba(255,255,255,0.8)] rounded-2xl p-8 md:p-12 shadow-[0_20px_50px_-12px_rgba(6,40,58,0.12)] relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-kk-blue-light/5 rounded-full -mr-20 -mt-20 blur-3xl" />
 
-            <div className="flex flex-col md:flex-row gap-8 items-start relative z-10">
+            <div className="flex flex-col md:flex-row gap-8 items-center relative z-10">
               {/* Avatar */}
               <div className="w-32 h-32 md:w-40 md:h-40 rounded-xl bg-kk-blue flex items-center justify-center text-kk-beige shrink-0 shadow-xl">
                 <GraduationCap size={64} />
@@ -167,15 +187,6 @@ export default async function InstructorPage({ params }: PageProps) {
 
               {/* Bilgiler */}
               <div className="flex-grow">
-                <div className="flex flex-wrap items-center gap-3 mb-3">
-                  {instructor.average_rating > 0 && (
-                    <div className="flex items-center gap-1 text-kk-gold font-bold">
-                      <Star size={18} fill="currentColor" />
-                      <span>{ratingDisplay}</span>
-                    </div>
-                  )}
-                </div>
-
                 <h1 className="text-4xl md:text-5xl font-extrabold text-kk-blue mb-4 tracking-tight leading-tight">
                   {instructor.title ? `${instructor.title} ${instructor.full_name}` : instructor.full_name}
                 </h1>

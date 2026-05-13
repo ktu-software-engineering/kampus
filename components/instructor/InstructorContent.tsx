@@ -153,15 +153,17 @@ function ReviewCard({ id: _id, course, date, rating, comment, upvotes: initialUp
 
       <div className="flex flex-wrap gap-2 mb-5">
         {[
-          { label: "Anlatım", val: teachingQuality },
           { label: "Ders Zorluğu", val: difficulty },
           { label: "Sınav Zorluğu", val: examDifficulty },
-        ].map((stat) => (
-          <div key={stat.label} className="bg-kk-beige/50 border border-kk-blue/5 px-3 py-1.5 rounded-lg flex items-center gap-2">
-            <span className="text-[11px] font-bold text-kk-text-muted uppercase tracking-tight">{stat.label}</span>
-            <span className="text-xs font-black text-kk-blue">{stat.val}/5</span>
-          </div>
-        ))}
+        ].map((stat) => {
+          const diffLabel = ["", "Çok Kolay", "Kolay", "Orta", "Zor", "Çok Zor"][Math.round(stat.val)] ?? "—";
+          return (
+            <div key={stat.label} className="bg-kk-beige/50 border border-kk-blue/5 px-3 py-1.5 rounded-lg flex items-center gap-2">
+              <span className="text-[11px] font-bold text-kk-text-muted uppercase tracking-tight">{stat.label}</span>
+              <span className="text-xs font-black text-kk-blue">{diffLabel}</span>
+            </div>
+          );
+        })}
       </div>
 
       <div className="flex items-center justify-between pt-4 border-t border-kk-blue/5">

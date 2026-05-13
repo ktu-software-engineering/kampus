@@ -25,7 +25,7 @@ export async function POST(req: Request) {
   // Hesap var mı + kilitli mi kontrol et
   const { data: profile } = await admin
     .from("users")
-    .select("locked_until, failed_login_count")
+    .select("id, locked_until, failed_login_count, created_at, verification_resend_count, last_verification_sent")
     .eq("email", email)
     .single();
 
@@ -64,7 +64,41 @@ export async function POST(req: Request) {
 
   if (error) {
     if (error.message.toLowerCase().includes("email not confirmed")) {
-      return Response.json({ error: "E-posta adresin henüz doğrulanmamış. Gelen kutunu kontrol et." }, { status: 403 });
+      const now = Date.now();
+      const OTP_EXPIRY_MS = 3600 * 1000; // Supabase OTP süresi: 1 saat
+      const RESEND_INTERVAL_MS = 8 * 3600 * 1000; // 8 saatte bir (günde 3 kez)
+      const MAX_RESENDS_PER_DAY = 3;
+
+      const registeredAt = profile?.created_at ? new Date(profile.created_at).getTime() : 0;
+      const lastSent = profile?.last_verification_sent ? new Date(profile.last_verification_sent).getTime() : 0;
+      const resendCount = profile?.verification_resend_count ?? 0;
+
+      const originalLinkExpired = now - registeredAt > OTP_EXPIRY_MS;
+      const enoughTimeSinceLastSend = now - lastSent > RESEND_INTERVAL_MS;
+      const underDailyLimit = resendCount < MAX_RESENDS_PER_DAY;
+
+      let extraMsg = "";
+
+      if (originalLinkExpired && enoughTimeSinceLastSend && underDailyLimit) {
+        // Yeni doğrulama maili gönder
+        await supabase.auth.resend({ type: "signup", email });
+        await admin.from("users").update({
+          last_verification_sent: new Date().toISOString(),
+          verification_resend_count: resendCount + 1,
+        }).eq("email", email);
+        const nextResendHours = 8;
+        extraMsg = ` Tekrar doğrulama maili attık. ${nextResendHours} saat sonra tekrar doğrulama maili alabilirsin.`;
+      } else if (!originalLinkExpired) {
+        extraMsg = " İlk kayıt olurken gönderilen link hâlâ geçerli, gelen kutunu kontrol et.";
+      } else if (!enoughTimeSinceLastSend && lastSent > 0) {
+        const remainingMs = RESEND_INTERVAL_MS - (now - lastSent);
+        const remainingHours = Math.ceil(remainingMs / 3600000);
+        extraMsg = ` ${remainingHours} saat sonra tekrar doğrulama maili alabilirsin.`;
+      }
+
+      return Response.json({
+        error: `E-posta adresin henüz doğrulanmamış. Gelen kutunu kontrol et.${extraMsg}`,
+      }, { status: 403 });
     }
 
     // Başarısız giriş sayacını artır

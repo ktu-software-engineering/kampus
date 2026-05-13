@@ -63,7 +63,7 @@ export default function RegisterPage() {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
     if (name === "email") {
-      setEmailError(value && !value.toLowerCase().endsWith("@ogr.ktu.edu.tr") ? "Lütfen KTÜ öğrenci e-postanızı girin. (örnek: 123456789@ogr.ktu.edu.tr)" : "");
+      setEmailError("");
     }
   };
 
@@ -202,7 +202,7 @@ export default function RegisterPage() {
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-[0.82rem] font-semibold text-[#5c544d] ml-1">E-posta (.edu.tr)</label>
+                <label className="text-[0.82rem] font-semibold text-[#5c544d] ml-1">E-posta</label>
                 <div className="relative">
                   <Mail size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9a9287]" />
                   <input
@@ -214,7 +214,7 @@ export default function RegisterPage() {
                     className={`w-full pl-10 pr-3.5 py-3 bg-[#f5f1ea] border-[1.5px] text-kk-blue text-[0.875rem] rounded-xl outline-none transition-all focus:ring-4 focus:ring-kk-blue-light/10 ${
                       emailError ? "border-red-500 focus:border-red-500" : "border-[#e8e2d9] focus:border-kk-blue-light"
                     }`}
-                    placeholder="ogrenciNo@ogr.ktu.edu.tr"
+                    placeholder="ornek@universite.edu.tr"
                   />
                 </div>
                 {emailError && <span className="text-[0.75rem] text-red-500 ml-1">{emailError}</span>}

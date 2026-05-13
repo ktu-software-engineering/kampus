@@ -1,115 +1,157 @@
-import { Search, Filter, UserPlus, Shield, User, GraduationCap, Ban, Edit, Trash2 } from "lucide-react";
+"use client";
 
-const mockUsers = [
-  { id: "USR-1042", name: "İbrahim Doğan", email: "ibrahim.d@ktu.edu.tr", role: "admin", joinDate: "12 Ekim 2025", status: "active" },
-  { id: "USR-1043", name: "Ahmet Yılmaz", email: "ahmet.y@ktu.edu.tr", role: "student", joinDate: "3 gün önce", status: "active" },
-  { id: "USR-1044", name: "Dr. Ayşe Yılmaz", email: "ayse.yilmaz@ktu.edu.tr", role: "professor", joinDate: "1 hafta önce", status: "active" },
-  { id: "USR-1045", name: "Mehmet Kaya", email: "mehmet.k@ktu.edu.tr", role: "student", joinDate: "2 ay önce", status: "banned" },
-];
+import { useState, useEffect, useCallback } from "react";
+import { Search, Edit, Trash2, X, Check } from "lucide-react";
+
+const ROLES = ["student", "professor", "moderator", "admin"] as const;
+const ROLE_LABELS: Record<string, string> = { student: "Öğrenci", professor: "Akademisyen", moderator: "Moderatör", admin: "Yönetici" };
+const ROLE_COLORS: Record<string, string> = {
+  student:   "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+  professor: "bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+  moderator: "bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
+  admin:     "bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300",
+};
+
+interface User { id: string; full_name: string | null; email: string; role: string; is_verified: boolean; created_at: string; }
+interface EditState { id: string; full_name: string; role: string; password: string; }
 
 export default function UsersPage() {
+  const [users, setUsers] = useState<User[]>([]);
+  const [total, setTotal] = useState(0);
+  const [q, setQ] = useState("");
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [editing, setEditing] = useState<EditState | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  const fetchUsers = useCallback(async () => {
+    setLoading(true);
+    const params = new URLSearchParams({ page: String(page) });
+    if (q) params.set("q", q);
+    const res = await fetch(`/api/admin/users?${params}`, { credentials: "include" });
+    const data = await res.json();
+    setUsers(data.users ?? []); setTotal(data.total ?? 0); setLoading(false);
+  }, [q, page]);
+
+  useEffect(() => { fetchUsers(); }, [fetchUsers]);
+
+  const handleSearch = (e: React.FormEvent) => { e.preventDefault(); setPage(1); fetchUsers(); };
+
+  const handleSave = async () => {
+    if (!editing) return;
+    setSaving(true);
+    const body: Record<string, string> = { id: editing.id, full_name: editing.full_name, role: editing.role };
+    if (editing.password) body.password = editing.password;
+    await fetch("/api/admin/users", { method: "PUT", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(body) });
+    setSaving(false); setEditing(null); fetchUsers();
+  };
+
+  const handleDelete = async (user: User) => {
+    if (!confirm(`${user.full_name ?? user.email} adlı kullanıcıyı ve tüm verilerini silmek istediğinizden emin misiniz?`)) return;
+    await fetch("/api/admin/users", { method: "DELETE", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify({ id: user.id }) });
+    fetchUsers();
+  };
+
+  const totalPages = Math.ceil(total / 20);
+
   return (
-    <div className="space-y-10 animate-in fade-in duration-500">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 border-b border-slate-200 dark:border-zinc-800 pb-8">
-        <div>
-          <h1 className="text-2xl font-black text-kk-blue dark:text-white uppercase tracking-tighter">Kullanıcı Veritabanı</h1>
-          <p className="text-kk-text-muted dark:text-zinc-400 mt-1 text-sm font-medium">Sistemdeki tüm kullanıcı rollerinin ve erişim yetkilerinin yönetimi.</p>
-        </div>
-        <button className="flex items-center gap-2 px-6 py-3 bg-kk-blue dark:bg-zinc-100 text-white dark:text-kk-blue rounded font-black text-xs uppercase tracking-[0.15em] hover:bg-opacity-90 active:scale-95 transition-all shadow-sm">
-          <UserPlus size={16} strokeWidth={3} /> Kullanıcı Davet Et
-        </button>
+    <div className="space-y-8 animate-in fade-in duration-500">
+      <div className="border-b border-slate-200 dark:border-zinc-800 pb-6">
+        <h1 className="text-2xl font-black text-kk-blue dark:text-white uppercase tracking-tighter">Kullanıcı Yönetimi</h1>
+        <p className="text-kk-text-muted dark:text-zinc-400 mt-1 text-sm">{total.toLocaleString("tr-TR")} kullanıcı kayıtlı</p>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1 group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-zinc-600 transition-colors" size={18} />
-          <input 
-            type="text" 
-            placeholder="İSİM, E-POSTA VEYA KULLANICI ID İLE ARA..." 
-            className="w-full pl-12 pr-4 py-3.5 bg-white dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded text-xs font-bold text-kk-blue dark:text-white uppercase tracking-wider focus:outline-none focus:ring-1 focus:ring-kk-blue transition-all" 
-          />
+      <form onSubmit={handleSearch} className="flex gap-3">
+        <div className="relative flex-1 max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+          <input value={q} onChange={e => setQ(e.target.value)} placeholder="İsim veya e-posta ile ara..."
+            className="w-full pl-9 pr-4 py-2.5 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-lg text-sm text-kk-blue dark:text-white focus:outline-none focus:ring-1 focus:ring-kk-blue" />
         </div>
-        <button className="flex items-center gap-2 px-6 py-3.5 bg-white dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 rounded text-xs font-bold uppercase tracking-widest hover:bg-slate-50 transition-colors">
-          <Filter size={16} /> Filtreleme
-        </button>
-      </div>
+        <button type="submit" className="px-4 py-2.5 bg-kk-blue text-white rounded-lg text-sm font-semibold hover:opacity-90 cursor-pointer">Ara</button>
+      </form>
 
-      <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded shadow-sm overflow-hidden transition-all duration-500">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-slate-50/50 dark:bg-zinc-800/30 text-slate-500 dark:text-zinc-500 border-b border-slate-200 dark:border-zinc-800">
-              <tr>
-                <th className="px-8 py-5 font-black uppercase tracking-widest text-[10px]">Kullanıcı Kimliği</th>
-                <th className="px-8 py-5 font-black uppercase tracking-widest text-[10px]">Yetki Rolü</th>
-                <th className="px-8 py-5 font-black uppercase tracking-widest text-[10px]">Kayıt Tarihi</th>
-                <th className="px-8 py-5 font-black uppercase tracking-widest text-[10px]">Durum</th>
-                <th className="px-8 py-5 font-black uppercase tracking-widest text-[10px] text-right">İşlem</th>
-              </tr>
+      <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-xl overflow-hidden shadow-sm">
+        {loading ? <div className="text-center py-12 text-slate-400 text-sm">Yükleniyor...</div> : (
+          <table className="w-full text-sm">
+            <thead className="bg-slate-50 dark:bg-zinc-800/50 border-b border-slate-200 dark:border-zinc-800">
+              <tr>{["Kullanıcı","Rol","Doğrulama","Kayıt",""].map(h => (
+                <th key={h} className={`px-6 py-4 text-xs font-black text-slate-500 dark:text-zinc-500 uppercase tracking-widest ${h ? "text-left" : "text-right"}`}>{h}</th>
+              ))}</tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-zinc-800">
-              {mockUsers.map((user) => (
-                <tr key={user.id} className={`hover:bg-slate-50/30 dark:hover:bg-zinc-800/20 transition-colors group ${user.status === 'banned' ? 'opacity-60 bg-red-50/5 dark:bg-red-900/5' : ''}`}>
-                  <td className="px-8 py-6">
-                    <div className="flex items-center gap-5">
-                      <div className="w-11 h-11 rounded bg-kk-beige-dark dark:bg-zinc-800 flex items-center justify-center text-kk-blue dark:text-white font-black text-sm border border-kk-blue/5 dark:border-zinc-700">
-                        {user.name.charAt(0)}
-                      </div>
-                      <div>
-                        <p className="text-kk-blue dark:text-zinc-200 font-bold text-sm uppercase tracking-tight">{user.name}</p>
-                        <p className="text-kk-text-muted dark:text-zinc-500 text-[10px] font-black tracking-widest uppercase">{user.email}</p>
-                      </div>
-                    </div>
+              {users.map(u => (
+                <tr key={u.id} className="hover:bg-slate-50/50 dark:hover:bg-zinc-800/30 transition-colors">
+                  <td className="px-6 py-4">
+                    <div className="font-semibold text-kk-blue dark:text-white">{u.full_name ?? "—"}</div>
+                    <div className="text-xs text-slate-400 dark:text-zinc-500">{u.email}</div>
                   </td>
-                  <td className="px-8 py-6">
-                    <RoleBadge role={user.role as keyof typeof roleConfig} />
+                  <td className="px-6 py-4">
+                    <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${ROLE_COLORS[u.role] ?? ""}`}>{ROLE_LABELS[u.role] ?? u.role}</span>
                   </td>
-                  <td className="px-8 py-6 text-kk-text-muted dark:text-zinc-400 font-bold text-xs uppercase tracking-tighter">{user.joinDate}</td>
-                  <td className="px-8 py-6">
-                    {user.status === 'active' ? (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 border border-emerald-100 dark:border-emerald-900/30 bg-emerald-50/50 dark:bg-emerald-900/10 text-emerald-700 dark:text-emerald-400 text-[9px] font-black uppercase tracking-widest rounded-sm">
-                        <div className="w-1 h-1 rounded-full bg-emerald-500"></div> Aktif
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 border border-red-100 dark:border-red-900/30 bg-red-50/50 dark:bg-red-900/10 text-red-700 dark:text-red-400 text-[9px] font-black uppercase tracking-widest rounded-sm">
-                        <Ban size={10} /> Yasaklı
-                      </span>
-                    )}
+                  <td className="px-6 py-4 text-xs">
+                    <span className={u.is_verified ? "text-green-600 font-semibold" : "text-slate-400"}>{u.is_verified ? "✓ Doğrulandı" : "Bekliyor"}</span>
                   </td>
-                  <td className="px-8 py-6 text-right">
-                    <div className="flex justify-end gap-2">
-                      <button title="Düzenle" className="p-2.5 text-slate-400 dark:text-zinc-600 border border-slate-100 dark:border-zinc-800 rounded hover:text-kk-blue dark:hover:text-white hover:border-kk-blue transition-all"><Edit size={16} /></button>
-                      <button title="Sil" className="p-2.5 text-slate-400 dark:text-zinc-600 border border-slate-100 dark:border-zinc-800 rounded hover:text-red-600 hover:border-red-600 transition-all"><Trash2 size={16} /></button>
+                  <td className="px-6 py-4 text-xs text-slate-400 dark:text-zinc-500">{new Date(u.created_at).toLocaleDateString("tr-TR")}</td>
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <button onClick={() => setEditing({ id: u.id, full_name: u.full_name ?? "", role: u.role, password: "" })}
+                        className="p-1.5 rounded-lg hover:bg-kk-blue/10 text-slate-400 hover:text-kk-blue transition-all cursor-pointer"><Edit size={15}/></button>
+                      <button onClick={() => handleDelete(u)}
+                        className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-slate-400 hover:text-red-500 transition-all cursor-pointer"><Trash2 size={15}/></button>
                     </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        )}
+      </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2">
+          <button onClick={() => setPage(p => Math.max(1,p-1))} disabled={page===1} className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-zinc-800 text-sm disabled:opacity-40 hover:bg-slate-50 dark:hover:bg-zinc-800 cursor-pointer">← Önceki</button>
+          <span className="text-sm text-slate-500">{page} / {totalPages}</span>
+          <button onClick={() => setPage(p => Math.min(totalPages,p+1))} disabled={page===totalPages} className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-zinc-800 text-sm disabled:opacity-40 hover:bg-slate-50 dark:hover:bg-zinc-800 cursor-pointer">Sonraki →</button>
         </div>
-        <div className="p-6 border-t border-slate-100 dark:border-zinc-800 flex items-center justify-between text-[10px] text-slate-500 dark:text-zinc-500 bg-slate-50/50 dark:bg-zinc-800/30">
-          <span className="font-black uppercase tracking-widest">Kayıt 1 - 4 (Toplam {mockUsers.length})</span>
-          <div className="flex gap-1">
-            <button className="px-4 py-2 border border-slate-200 dark:border-zinc-800 rounded text-[10px] font-black uppercase tracking-widest hover:bg-white transition-all disabled:opacity-30" disabled>Geri</button>
-            <button className="w-8 h-8 bg-kk-blue dark:bg-zinc-100 text-white dark:text-kk-blue rounded text-[10px] font-black">1</button>
-            <button className="px-4 py-2 border border-slate-200 dark:border-zinc-800 rounded text-[10px] font-black uppercase tracking-widest hover:bg-white transition-all">İleri</button>
+      )}
+
+      {editing && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{background:"rgba(0,0,0,0.4)"}} onClick={e => e.target===e.currentTarget && setEditing(null)}>
+          <div className="bg-white dark:bg-zinc-900 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-kk-blue dark:text-white">Kullanıcı Düzenle</h3>
+              <button onClick={() => setEditing(null)} className="text-slate-400 hover:text-slate-600 cursor-pointer"><X size={18}/></button>
+            </div>
+            {[
+              { label: "Ad Soyad", key: "full_name", type: "text", placeholder: "" },
+            ].map(f => (
+              <div key={f.key}>
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-1">{f.label}</label>
+                <input type={f.type} value={(editing as any)[f.key]} onChange={e => setEditing(s => s && ({...s, [f.key]: e.target.value}))}
+                  className="w-full px-3 py-2.5 border border-slate-200 dark:border-zinc-700 rounded-lg text-sm bg-white dark:bg-zinc-800 text-kk-blue dark:text-white focus:outline-none focus:ring-1 focus:ring-kk-blue" />
+              </div>
+            ))}
+            <div>
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-1">Rol</label>
+              <select value={editing.role} onChange={e => setEditing(s => s && ({...s, role: e.target.value}))}
+                className="w-full px-3 py-2.5 border border-slate-200 dark:border-zinc-700 rounded-lg text-sm bg-white dark:bg-zinc-800 text-kk-blue dark:text-white focus:outline-none focus:ring-1 focus:ring-kk-blue cursor-pointer">
+                {ROLES.map(r => <option key={r} value={r}>{ROLE_LABELS[r]}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-1">Yeni Şifre <span className="text-slate-300 font-normal normal-case">(boş bırakılırsa değişmez)</span></label>
+              <input type="password" value={editing.password} onChange={e => setEditing(s => s && ({...s, password: e.target.value}))} placeholder="En az 8 karakter"
+                className="w-full px-3 py-2.5 border border-slate-200 dark:border-zinc-700 rounded-lg text-sm bg-white dark:bg-zinc-800 text-kk-blue dark:text-white focus:outline-none focus:ring-1 focus:ring-kk-blue" />
+            </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <button onClick={() => setEditing(null)} className="px-4 py-2 text-sm text-slate-500 hover:text-slate-700 cursor-pointer">İptal</button>
+              <button onClick={handleSave} disabled={saving} className="flex items-center gap-1.5 px-4 py-2 bg-kk-blue text-white rounded-lg text-sm font-semibold hover:opacity-90 disabled:opacity-50 cursor-pointer">
+                <Check size={14}/> {saving ? "Kaydediliyor..." : "Kaydet"}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
-  );
-}
-
-const roleConfig = {
-  admin: { icon: <Shield size={12} />, class: "border-purple-100 bg-purple-50 text-purple-700 dark:bg-purple-900/10 dark:border-purple-900/30 dark:text-purple-400" },
-  professor: { icon: <GraduationCap size={12} />, class: "border-blue-100 bg-blue-50 text-blue-700 dark:bg-blue-900/10 dark:border-blue-900/30 dark:text-blue-400" },
-  student: { icon: <User size={12} />, class: "border-slate-200 bg-slate-50 text-slate-600 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-400" },
-};
-
-function RoleBadge({ role }: { role: keyof typeof roleConfig }) {
-  const config = roleConfig[role];
-  return (
-    <span className={`inline-flex items-center gap-1.5 px-3 py-1 border rounded text-[9px] font-black tracking-widest ${config.class}`}>
-      {config.icon} {role.toUpperCase()}
-    </span>
   );
 }

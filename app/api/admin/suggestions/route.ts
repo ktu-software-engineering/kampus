@@ -1,5 +1,2 @@
-// GET /api/admin/suggestions — Öneri kuyruğu (moderator+)
-// PUT /api/admin/suggestions/:id — Onayla / reddet
-export async function GET() {
-  return Response.json({ message: "Yapım aşamasında" }, { status: 501 });
-}
+// Yönlendirme: /api/admin/reports?type=suggestions kullan
+export { GET, PUT } from "@/app/api/admin/reports/route";

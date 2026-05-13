@@ -24,11 +24,16 @@ interface NavbarProps {
   setSidebarOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function Navbar({ sidebarOpen = false, setSidebarOpen = () => {} }: NavbarProps) {
+export function Navbar({ sidebarOpen: externalOpen, setSidebarOpen: externalSet }: NavbarProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [mounted, setMounted] = React.useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
   const { user, loading } = useCurrentUser();
+
+  // Dışarıdan prop gelirse onu kullan, gelmezse kendi state'ini kullan
+  const sidebarOpen = externalOpen !== undefined ? externalOpen : internalOpen;
+  const setSidebarOpen = externalSet ?? setInternalOpen;
 
   React.useEffect(() => {
     setMounted(true);
@@ -123,10 +128,10 @@ export function Navbar({ sidebarOpen = false, setSidebarOpen = () => {} }: Navba
         }`}
       />
 
-      {/* Soldan açılan menü paneli */}
+      {/* Sağdan açılan menü paneli */}
       <div
         aria-hidden={!sidebarOpen}
-        className={`kk-menu-panel fixed top-0 left-0 w-[340px] max-w-[calc(100vw-32px)] max-h-screen overflow-y-auto z-[25] pt-5 pb-8 px-6 shadow-[12px_16px_48px_-12px_rgba(6,40,58,0.28)] border-r border-b border-[rgba(10,42,58,0.08)] rounded-br-[24px] bg-[rgba(246,241,231,0.96)] backdrop-blur-[28px] transition-transform duration-500 cubic-bezier(0.4,0,0.2,1) ${
+        className={`kk-menu-panel fixed top-0 right-0 w-[300px] max-w-[calc(100vw-32px)] max-h-screen overflow-y-auto z-[25] pt-5 pb-8 px-6 shadow-[-12px_16px_48px_-12px_rgba(6,40,58,0.28)] border-l border-b border-[rgba(10,42,58,0.08)] rounded-bl-[24px] bg-[rgba(246,241,231,0.96)] backdrop-blur-[28px] transition-transform duration-500 ${
           sidebarOpen ? "translate-y-0" : "-translate-y-[105%]"
         }`}
       >
@@ -164,19 +169,15 @@ export function Navbar({ sidebarOpen = false, setSidebarOpen = () => {} }: Navba
         </p>
         <nav className="flex flex-col gap-0">
           {[
-            { label: "Hocalar", desc: "Akademisyenleri değerlendir" },
-            { label: "Sıralamalar", desc: "En iyi üniversite ve hocalar" },
-            { label: "Yorum Yaz", desc: "Sen de değerlendirme paylaş" },
-            { label: "Hakkımızda", desc: "Misyonumuz ve ekibimiz" },
+            { label: "Hocalar", href: "/hocalar" },
+            { label: "Dersler",  href: "/dersler" },
+            { label: "Profil",   href: "/settings" },
           ].map((item, i) => (
             <Button
               key={item.label}
               variant="kk-ghost-link"
               size="unsized"
-              onClick={() => {
-                setSidebarOpen(false);
-                if (item.label === "Hocalar") router.push("/");
-              }}
+              onClick={() => { setSidebarOpen(false); router.push(item.href); }}
               className={[
                 "w-full justify-between text-left gap-3 px-1 py-4 rounded-none",
                 "border-b border-[#0a2a3a]/08 text-[#06283a]",
@@ -185,17 +186,34 @@ export function Navbar({ sidebarOpen = false, setSidebarOpen = () => {} }: Navba
                 "transition-all duration-200",
               ].join(" ")}
             >
-              <div className="flex-1 min-w-0">
-                <p className="display-serif m-0 mb-[2px] text-[17px] font-medium tracking-[-0.01em]">
-                  {item.label}
-                </p>
-                <p className="m-0 text-[11.5px] text-[#6b6356] tracking-[0.01em]">
-                  {item.desc}
-                </p>
-              </div>
+              <p className="display-serif m-0 text-[17px] font-medium tracking-[-0.01em]">{item.label}</p>
               <ArrowRight size={16} color="#006392" strokeWidth={2} className="shrink-0" />
             </Button>
           ))}
+          {/* Giriş Yap / Çıkış Yap */}
+          {mounted && (
+            user ? (
+              <Button
+                variant="kk-ghost-link"
+                size="unsized"
+                onClick={() => { setSidebarOpen(false); handleLogout(); }}
+                className="w-full justify-between text-left gap-3 px-1 py-4 rounded-none border-b border-[#0a2a3a]/08 hover:pl-3 transition-all duration-200 text-red-500"
+              >
+                <p className="display-serif m-0 text-[17px] font-medium tracking-[-0.01em]">Çıkış Yap</p>
+                <ArrowRight size={16} color="currentColor" strokeWidth={2} className="shrink-0" />
+              </Button>
+            ) : (
+              <Button
+                variant="kk-ghost-link"
+                size="unsized"
+                onClick={() => { setSidebarOpen(false); router.push("/login"); }}
+                className="w-full justify-between text-left gap-3 px-1 py-4 rounded-none border-b border-[#0a2a3a]/08 hover:pl-3 transition-all duration-200 text-kk-blue-light"
+              >
+                <p className="display-serif m-0 text-[17px] font-medium tracking-[-0.01em]">Giriş Yap</p>
+                <ArrowRight size={16} color="#006392" strokeWidth={2} className="shrink-0" />
+              </Button>
+            )
+          )}
         </nav>
       </div>
 
@@ -212,22 +230,6 @@ export function Navbar({ sidebarOpen = false, setSidebarOpen = () => {} }: Navba
               className="kk-site-logo h-[60px] w-auto object-contain ml-3 cursor-pointer"
               onClick={() => router.push("/")}
             />
-            {mounted && isSettingsPage && !isLoginPage && !isRegisterPage && (
-              <Button
-                variant="kk-hamburger"
-                size="unsized"
-                onClick={() => setSidebarOpen((v) => !v)}
-                aria-label={sidebarOpen ? "Menüyü kapat" : "Menüyü aç"}
-                aria-expanded={sidebarOpen}
-                className="mobile-hamburger backdrop-blur-[10px]"
-              >
-                <svg viewBox="0 0 24 24" width="40" height="40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <line x1="4" y1="7" x2="20" y2="7" stroke="#06283a" strokeWidth="1.8" strokeLinecap="round" />
-                  <line x1="4" y1="12" x2="20" y2="12" stroke="#06283a" strokeWidth="1.8" strokeLinecap="round" />
-                  <line x1="4" y1="17" x2="20" y2="17" stroke="#06283a" strokeWidth="1.8" strokeLinecap="round" />
-                </svg>
-              </Button>
-            )}
           </div>
 
           {/* ── Orta: Arama */}
@@ -253,18 +255,34 @@ export function Navbar({ sidebarOpen = false, setSidebarOpen = () => {} }: Navba
             </form>
           )}
 
-          <nav className="flex items-center gap-2 pt-1.5">
+          {/* Mobil hamburger — sağ taraf */}
+          {mounted && !isLoginPage && !isRegisterPage && (
+            <Button
+              variant="kk-hamburger"
+              size="unsized"
+              onClick={() => setSidebarOpen((v) => !v)}
+              aria-label={sidebarOpen ? "Menüyü kapat" : "Menüyü aç"}
+              aria-expanded={sidebarOpen}
+              className="mobile-hamburger backdrop-blur-[10px] md:hidden"
+            >
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <line x1="4" y1="7" x2="20" y2="7" stroke="#06283a" strokeWidth="1.8" strokeLinecap="round" />
+                <line x1="4" y1="12" x2="20" y2="12" stroke="#06283a" strokeWidth="1.8" strokeLinecap="round" />
+                <line x1="4" y1="17" x2="20" y2="17" stroke="#06283a" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+            </Button>
+          )}
+
+          <nav className="hidden md:flex items-center gap-2 pt-1.5">
             <div className="desktop-nav-links flex items-center gap-1">
-              {["Hocalar"].map((item) => (
+              {[{ label: "Hocalar", href: "/hocalar" }, { label: "Dersler", href: "/dersler" }].map(({ label, href }) => (
                 <Button
-                  key={item}
+                  key={label}
                   variant="kk-nav"
                   size="unsized"
-                  onClick={() => {
-                    if (item === "Hocalar") router.push("/hocalar");
-                  }}
+                  onClick={() => router.push(href)}
                 >
-                  {item}
+                  {label}
                 </Button>
               ))}
             </div>
@@ -274,7 +292,7 @@ export function Navbar({ sidebarOpen = false, setSidebarOpen = () => {} }: Navba
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => router.push("/settings")}
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-kk-blue/5 transition-colors"
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-kk-blue/5 transition-colors cursor-pointer"
                   >
                     <div className="w-8 h-8 rounded-full bg-kk-blue flex items-center justify-center text-[11px] font-bold text-kk-gold">
                       {getInitials(user.full_name)}

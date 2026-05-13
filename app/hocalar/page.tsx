@@ -52,8 +52,8 @@ export default async function HocalarPage({ searchParams }: Props) {
   const orderCol = siralama?.startsWith("yorum") ? "review_count" : "average_rating";
 
   let query = supabase
-    .from("instructors")
-    .select("id, full_name, title, slug, average_rating, review_count", { count: "exact" })
+    .from("instructor_stats")
+    .select("id, full_name, title, slug, avg_rating, review_count", { count: "exact" })
     .eq("is_active", true);
 
   if (unvan) {
@@ -61,7 +61,12 @@ export default async function HocalarPage({ searchParams }: Props) {
     query = titles.length === 1 ? query.eq("title", titles[0]) : query.in("title", titles);
   }
   if (filteredIds) query = filteredIds.length > 0 ? query.in("id", filteredIds) : query.in("id", ["00000000-0000-0000-0000-000000000000"]);
-  query = query.order(orderCol, { ascending }).order("full_name", { ascending: true });
+
+  // avg_rating NULL olan (yorum yok) kayıtlar nullsFirst:false ile sona gider
+  const ratingCol = orderCol === "average_rating" ? "avg_rating" : orderCol;
+  query = query
+    .order(ratingCol, { ascending, nullsFirst: false })
+    .order("full_name", { ascending: true });
   query = query.range(from, to);
 
   const { data: instructors, count } = await query;
@@ -91,7 +96,7 @@ export default async function HocalarPage({ searchParams }: Props) {
             full_name: i.full_name,
             title: i.title,
             slug: i.slug,
-            average_rating: i.average_rating,
+            average_rating: i.avg_rating ?? 0,
             review_count: i.review_count,
           }))}
           totalPages={totalPages}

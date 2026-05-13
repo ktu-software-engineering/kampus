@@ -21,6 +21,11 @@ const fraunces = Fraunces({
 export const metadata: Metadata = {
   title: "KampusKarne",
   description: "Hocaları değerlendir, fark yarat.",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.png",
+  },
 };
 
 export default function RootLayout({
