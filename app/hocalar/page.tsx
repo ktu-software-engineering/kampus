@@ -85,7 +85,7 @@ export default async function HocalarPage({ searchParams }: Props) {
       <BackgroundTexture />
       <Navbar />
 
-      <main className="flex-grow relative z-10 pt-24 pb-16 px-4 md:px-8 max-w-7xl mx-auto w-full">
+      <main className="flex-grow relative z-10 pt-14 md:pt-24 pb-16 px-4 md:px-8 max-w-7xl mx-auto w-full">
         {/* Başlık */}
         <div className="mb-8">
           <h1 className="text-4xl font-extrabold text-kk-blue tracking-tight mb-1">
