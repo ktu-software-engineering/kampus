@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
-import { Star, GraduationCap, ChevronDown, X } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Star, GraduationCap, ChevronDown, X, Search } from "lucide-react";
 
 interface Instructor {
   id: string;
@@ -21,6 +22,7 @@ interface Props {
   currentBolum: string;
   currentUnvan: string;
   currentSiralama: string;
+  currentQ: string;
   totalCount: number;
 }
 
@@ -34,6 +36,40 @@ const TITLE_GROUPS = [
   { label: "Öğr. Gör.",       values: ["Öğr. Gör. Dr.", "Öğr. Gör."] },
 ];
 
+function SearchBar({ currentQ, onSearch }: { currentQ: string; onSearch: (q: string) => void }) {
+  const [value, setValue] = useState(currentQ);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // currentQ dışarıdan değişince (filtre temizlenince) sıfırla
+  useEffect(() => { setValue(currentQ); }, [currentQ]);
+
+  const handleChange = (v: string) => {
+    setValue(v);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      if (v.length === 0 || v.length >= 2) onSearch(v);
+    }, 300);
+  };
+
+  return (
+    <div className="relative mb-6">
+      <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-kk-text-muted pointer-events-none" />
+      <input
+        value={value}
+        onChange={e => handleChange(e.target.value)}
+        placeholder="Hoca adına göre ara..."
+        className="w-full pl-10 pr-9 py-3.5 rounded-xl border-[1.5px] border-[#e8e2d9] bg-white text-kk-blue text-sm outline-none focus:border-kk-blue-light focus:ring-4 focus:ring-kk-blue-light/10 transition-all"
+      />
+      {value && (
+        <button type="button" onClick={() => { setValue(""); onSearch(""); }}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-kk-text-muted hover:text-kk-blue cursor-pointer">
+          <X size={14} />
+        </button>
+      )}
+    </div>
+  );
+}
+
 const SORT_OPTIONS = [
   { value: "puan_azalan",  label: "En Yüksek Puan" },
   { value: "puan_artan",   label: "En Düşük Puan" },
@@ -43,16 +79,32 @@ const SORT_OPTIONS = [
 
 export function InstructorFilters({
   departments, titles, instructors,
-  totalPages, currentPage, currentBolum, currentUnvan, currentSiralama, totalCount,
+  totalPages, currentPage, currentBolum, currentUnvan, currentSiralama, currentQ, totalCount,
 }: Props) {
   const router = useRouter();
   const pathname = usePathname();
+  const hasFilters = currentUnvan;
+  const [showClear, setShowClear] = useState(!!hasFilters);
+  const [clearClosing, setClearClosing] = useState(false);
+  const prevHasFilters = useRef(hasFilters);
+
+  useEffect(() => {
+    if (hasFilters && !prevHasFilters.current) {
+      setShowClear(true);
+      setClearClosing(false);
+    } else if (!hasFilters && prevHasFilters.current) {
+      setClearClosing(true);
+      setTimeout(() => { setShowClear(false); setClearClosing(false); }, 220);
+    }
+    prevHasFilters.current = hasFilters;
+  }, [hasFilters]);
 
   function updateParams(updates: Record<string, string>) {
     const params = new URLSearchParams();
     if (currentBolum)   params.set("bolum",    currentBolum);
     if (currentUnvan)   params.set("unvan",    currentUnvan);
     if (currentSiralama && currentSiralama !== "puan_azalan") params.set("siralama", currentSiralama);
+    if (currentQ)       params.set("q",        currentQ);
     params.set("sayfa", "1");
     Object.entries(updates).forEach(([k, v]) => v ? params.set(k, v) : params.delete(k));
     if (params.get("sayfa") === "1") params.delete("sayfa");
@@ -64,18 +116,18 @@ export function InstructorFilters({
     if (currentBolum) params.set("bolum", currentBolum);
     if (currentUnvan) params.set("unvan", currentUnvan);
     if (currentSiralama && currentSiralama !== "puan_azalan") params.set("siralama", currentSiralama);
+    if (currentQ) params.set("q", currentQ);
     if (p > 1) params.set("sayfa", String(p));
     router.push(`${pathname}?${params.toString()}`);
   }
 
-  const hasFilters = currentUnvan;
 
   return (
     <div>
       {/* Filtre Çubuğu */}
-      <div className="flex flex-wrap gap-3 items-center mb-6">
+      <div className="flex flex-wrap gap-3 items-center mb-3 w-full">
         {/* Unvan filtreleri */}
-        <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-3 gap-2 w-full md:flex md:flex-wrap md:w-auto">
           {TITLE_GROUPS.map(group => {
             const groupKey = group.values.join(",");
             const active = currentUnvan === groupKey;
@@ -83,7 +135,7 @@ export function InstructorFilters({
               <button
                 key={group.label}
                 onClick={() => updateParams({ unvan: active ? "" : groupKey })}
-                className="px-3.5 py-2 rounded-xl text-xs font-semibold border-[1.5px] transition-all cursor-pointer"
+                className="px-3.5 py-2 rounded-xl text-xs font-semibold border-[1.5px] transition-all cursor-pointer text-center w-full md:w-auto"
                 style={
                   active
                     ? { background: "#06283a", color: "#fff", borderColor: "#06283a" }
@@ -96,28 +148,45 @@ export function InstructorFilters({
           })}
         </div>
 
-        {/* Sıralama */}
-        <div className="relative ml-auto">
-          <select
-            value={currentSiralama}
-            onChange={e => updateParams({ siralama: e.target.value })}
-            className="appearance-none pl-4 pr-8 py-2.5 rounded-xl border-[1.5px] border-[#e8e2d9] bg-white text-kk-blue text-sm font-medium outline-none cursor-pointer focus:border-kk-blue-light transition-all"
-          >
-            {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-          </select>
-          <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-kk-text-muted pointer-events-none" />
-        </div>
+        {/* Sıralama + Temizle — mobilde grid */}
+        <div
+          className="grid gap-2 w-full md:contents"
+          style={{
+            gridTemplateColumns: showClear ? "1fr 1fr" : "1fr",
+            transition: "grid-template-columns 0.25s ease",
+          }}
+        >
+          <style>{`
+            @keyframes kk-slide-in  { from { opacity:0; transform:translateX(8px);  } to { opacity:1; transform:translateX(0);    } }
+            @keyframes kk-slide-out { from { opacity:1; transform:translateX(0);    } to { opacity:0; transform:translateX(8px);  } }
+          `}</style>
 
-        {/* Filtreleri temizle */}
-        {hasFilters && (
-          <button
-            onClick={() => router.push(pathname)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-red-500 border border-red-200 bg-red-50 hover:bg-red-100 transition-all cursor-pointer"
-          >
-            <X size={12} /> Filtreleri Temizle
-          </button>
-        )}
+          <div className="relative md:ml-auto">
+            <select
+              value={currentSiralama}
+              onChange={e => updateParams({ siralama: e.target.value })}
+              className="appearance-none w-full pl-4 pr-8 py-2.5 rounded-xl border-[1.5px] border-[#e8e2d9] bg-white text-kk-blue text-sm font-medium outline-none cursor-pointer focus:border-kk-blue-light transition-all"
+            >
+              {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+            </select>
+            <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-kk-text-muted pointer-events-none" />
+          </div>
+
+          {showClear && (
+            <button
+              onClick={() => router.push(pathname)}
+              className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-red-500 border border-red-200 bg-red-50 hover:bg-red-100 cursor-pointer"
+              style={{ animation: `${clearClosing ? "kk-slide-out" : "kk-slide-in"} 0.22s ease forwards` }}
+            >
+              <X size={12} /> Filtreleri Temizle
+            </button>
+          )}
+        </div>
       </div>
+
+      {/* Arama barı — debounced */}
+      <SearchBar currentQ={currentQ} onSearch={q => updateParams({ q, sayfa: "1" })} />
+
 
       {/* Hoca Kartları */}
       {instructors.length === 0 ? (

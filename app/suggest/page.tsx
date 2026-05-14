@@ -155,8 +155,9 @@ function SuggestFormContent() {
 
 export default function SuggestPage() {
   return (
-    <div className="flex flex-col min-h-screen relative bg-kk-beige font-sans">
+    <div className="flex flex-col min-h-screen bg-kk-beige font-sans overflow-x-hidden">
       <BackgroundTexture />
+      <div className="relative z-[1] flex flex-col flex-1">
       <Navbar />
 
       <main className="flex-grow relative z-10 pt-32 pb-20 px-4 md:px-8 max-w-4xl mx-auto w-full flex flex-col items-center">
@@ -175,6 +176,7 @@ export default function SuggestPage() {
       </main>
 
       <Footer />
+      </div>
     </div>
   );
 }

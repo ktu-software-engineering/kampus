@@ -209,7 +209,7 @@ function CookieBanner() {
   return (
     <>
       {showPolicy && <CookieModal onClose={() => setShowPolicy(false)} />}
-      <div className="fixed bottom-[24px] left-6 max-w-[340px] bg-kk-beige/97 backdrop-blur-[18px] border border-kk-blue/12 rounded-[18px] p-[18px_20px] z-[29] shadow-[0_8px_32px_-8px_rgba(6,40,58,0.18)] flex flex-col gap-3">
+      <div className="fixed bottom-[24px] left-4 right-4 md:left-6 md:right-auto md:max-w-[340px] bg-kk-beige/97 backdrop-blur-[18px] border border-kk-blue/12 rounded-[18px] p-[18px_20px] z-[31] shadow-[0_8px_32px_-8px_rgba(6,40,58,0.18)] flex flex-col gap-3">
         <div className="flex items-start gap-3">
           <span className="text-[22px] leading-none shrink-0">🍪</span>
           <p className="text-[12.5px] text-[#3d362e] leading-[1.6] m-0">
@@ -373,7 +373,7 @@ export default function HomePage() {
 
           <div className="kk-hero-pad relative z-[3] pt-[180px] pb-14 px-6 text-center">
             <div className="max-w-[720px] mx-auto relative">
-              <h1 className="display-serif text-[clamp(26px,4.5vw,58px)] font-medium text-kk-blue leading-[1.05] mb-[22px] tracking-[-0.02em] whitespace-nowrap">
+              <h1 className="display-serif text-[clamp(22px,4.5vw,58px)] font-medium text-kk-blue leading-[1.1] mb-[22px] tracking-[-0.02em]">
                 Hocaları değerlendir,{" "}
                 <em className="display-serif italic font-medium text-kk-blue-light">
                   fark yarat.
@@ -437,7 +437,7 @@ export default function HomePage() {
                 <Button
                   variant="kk-cat"
                   size="unsized"
-                  className="kk-cat-cell backdrop-blur-[18px] absolute top-0 left-0 right-0"
+                  className="kk-cat-cell backdrop-blur-[18px] absolute top-0 left-0 right-0 bottom-0 md:bottom-auto overflow-hidden"
                   onClick={() => {
                     if (idx === 1) router.push("/hocalar");
                     if (idx === 2) router.push("/dersler");
@@ -452,11 +452,11 @@ export default function HomePage() {
                       <IllustrationBooks size={72} />
                     )}
                   </span>
-                  <div className="overflow-hidden transition-all duration-300 text-center max-h-[72px] opacity-100 mt-4 md:max-h-0 md:opacity-0 md:mt-0 md:group-hover:max-h-[72px] md:group-hover:opacity-100 md:group-hover:mt-4">
-                    <p className="display-serif m-0 mb-1 text-kk-blue text-[13px] font-semibold tracking-[-0.01em] whitespace-normal break-words">
+                  <div className="overflow-hidden transition-all duration-300 text-center max-h-[72px] opacity-100 mt-4 md:max-h-0 md:opacity-0 md:mt-0 md:group-hover:max-h-[72px] md:group-hover:opacity-100 md:group-hover:mt-4 px-1">
+                    <p className="display-serif m-0 text-kk-blue text-[12px] font-semibold tracking-[-0.01em] whitespace-normal break-words">
                       {label}
                     </p>
-                    <p className="m-0 text-kk-text-muted text-[12px] leading-[1.45]">
+                    <p className="m-0 text-kk-text-muted text-[11px] leading-[1.4] break-words whitespace-normal hidden md:block">
                       {desc}
                     </p>
                   </div>
