@@ -227,7 +227,7 @@ export function Navbar({ sidebarOpen: externalOpen, setSidebarOpen: externalSet 
       </div>
 
       {/* Header */}
-      <header className="kk-header sticky top-0 z-[20] bg-transparent py-4 pr-12 pl-2">
+      <header className="kk-header sticky top-0 z-[20] bg-transparent py-4 pr-4 md:pr-12 pl-2">
         <div className="w-full flex items-center justify-between gap-4">
           <div className="kk-logo-group flex flex-row items-center gap-[10px]">
             <Image
@@ -274,10 +274,10 @@ export function Navbar({ sidebarOpen: externalOpen, setSidebarOpen: externalSet 
               aria-expanded={sidebarOpen}
               className="mobile-hamburger backdrop-blur-[10px] md:hidden"
             >
-              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <line x1="4" y1="7" x2="20" y2="7" stroke="#06283a" strokeWidth="1.8" strokeLinecap="round" />
-                <line x1="4" y1="12" x2="20" y2="12" stroke="#06283a" strokeWidth="1.8" strokeLinecap="round" />
-                <line x1="4" y1="17" x2="20" y2="17" stroke="#06283a" strokeWidth="1.8" strokeLinecap="round" />
+              <svg viewBox="4 5 16 14" width="40" height="40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <line x1="4" y1="7" x2="20" y2="7" stroke="#06283a" strokeWidth="2.2" strokeLinecap="round" />
+                <line x1="4" y1="12" x2="20" y2="12" stroke="#06283a" strokeWidth="2.2" strokeLinecap="round" />
+                <line x1="4" y1="17" x2="20" y2="17" stroke="#06283a" strokeWidth="2.2" strokeLinecap="round" />
               </svg>
             </Button>
           )}

@@ -57,7 +57,7 @@ export default async function DerslerPage({ searchParams }: Props) {
       <BackgroundTexture />
       <Navbar />
 
-      <main className="flex-grow relative z-10 pt-24 pb-16 px-4 md:px-8 max-w-7xl mx-auto w-full">
+      <main className="flex-grow relative z-10 pt-14 md:pt-24 pb-16 px-4 md:px-8 max-w-7xl mx-auto w-full">
         <div className="mb-8">
           <h1 className="text-4xl font-extrabold text-kk-blue tracking-tight mb-1">Dersler</h1>
           <p className="text-kk-text-muted text-sm">{count ?? 0} ders listeleniyor</p>
