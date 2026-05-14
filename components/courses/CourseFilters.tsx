@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
 import { BookOpen, ChevronDown, X } from "lucide-react";
 
 interface Course {
@@ -52,6 +53,20 @@ function diffColor(val: number): string {
 export function CourseFilters({ departments, courses, totalPages, currentPage, currentBolum, currentSiralama }: Props) {
   const router = useRouter();
   const pathname = usePathname();
+  const hasFilter = !!currentBolum;
+  const [showClear, setShowClear] = useState(hasFilter);
+  const [clearClosing, setClearClosing] = useState(false);
+  const prevHasFilter = useRef(hasFilter);
+
+  useEffect(() => {
+    if (hasFilter && !prevHasFilter.current) {
+      setShowClear(true); setClearClosing(false);
+    } else if (!hasFilter && prevHasFilter.current) {
+      setClearClosing(true);
+      setTimeout(() => { setShowClear(false); setClearClosing(false); }, 220);
+    }
+    prevHasFilter.current = hasFilter;
+  }, [hasFilter]);
 
   function updateParams(updates: Record<string, string>) {
     const params = new URLSearchParams();
@@ -73,13 +88,20 @@ export function CourseFilters({ departments, courses, totalPages, currentPage, c
   return (
     <div>
       {/* Filtre Çubuğu */}
-      <div className="flex flex-wrap gap-3 items-center mb-6">
+      <style>{`
+        @keyframes cf-slide-in  { from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)} }
+        @keyframes cf-slide-out { from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(8px)} }
+      `}</style>
+      <div
+        className={`grid gap-3 w-full mb-6 grid-cols-2 ${showClear ? "md:grid-cols-3" : "md:grid-cols-2"}`}
+        style={{ transition: "grid-template-columns 0.25s ease" }}
+      >
         {/* Bölüm */}
         <div className="relative">
           <select
             value={currentBolum}
             onChange={e => updateParams({ bolum: e.target.value })}
-            className="appearance-none pl-4 pr-8 py-2.5 rounded-xl border-[1.5px] border-[#e8e2d9] bg-white text-kk-blue text-sm font-medium outline-none cursor-pointer focus:border-kk-blue-light transition-all"
+            className="appearance-none w-full pl-4 pr-8 py-3.5 rounded-xl border-[1.5px] border-[#e8e2d9] bg-white text-kk-blue text-sm font-medium outline-none cursor-pointer focus:border-kk-blue-light transition-all"
           >
             <option value="">Tüm Bölümler</option>
             {departments.map(d => <option key={d} value={d}>{d}</option>)}
@@ -88,11 +110,11 @@ export function CourseFilters({ departments, courses, totalPages, currentPage, c
         </div>
 
         {/* Sıralama */}
-        <div className="relative ml-auto">
+        <div className="relative">
           <select
             value={currentSiralama}
             onChange={e => updateParams({ siralama: e.target.value })}
-            className="appearance-none pl-4 pr-8 py-2.5 rounded-xl border-[1.5px] border-[#e8e2d9] bg-white text-kk-blue text-sm font-medium outline-none cursor-pointer focus:border-kk-blue-light transition-all"
+            className="appearance-none w-full pl-4 pr-8 py-3.5 rounded-xl border-[1.5px] border-[#e8e2d9] bg-white text-kk-blue text-sm font-medium outline-none cursor-pointer focus:border-kk-blue-light transition-all"
           >
             {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
@@ -100,10 +122,11 @@ export function CourseFilters({ departments, courses, totalPages, currentPage, c
         </div>
 
         {/* Temizle */}
-        {currentBolum && (
+        {showClear && (
           <button
             onClick={() => router.push(pathname)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-red-500 border border-red-200 bg-red-50 hover:bg-red-100 transition-all cursor-pointer"
+            className="col-span-2 md:col-span-1 flex items-center justify-center gap-1.5 px-3 py-3.5 rounded-xl text-xs font-semibold text-red-500 border border-red-200 bg-red-50 hover:bg-red-100 cursor-pointer"
+            style={{ animation: `${clearClosing ? "cf-slide-out" : "cf-slide-in"} 0.22s ease forwards` }}
           >
             <X size={12} /> Filtreleri Temizle
           </button>

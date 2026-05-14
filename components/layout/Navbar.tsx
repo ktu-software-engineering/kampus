@@ -122,7 +122,7 @@ export function Navbar({ sidebarOpen: externalOpen, setSidebarOpen: externalSet 
       <div
         onClick={() => setSidebarOpen(false)}
         aria-hidden={!sidebarOpen}
-        className={`fixed inset-0 z-[18] transition-all duration-350 ease-in-out ${
+        className={`fixed inset-0 z-[31] transition-all duration-350 ease-in-out ${
           sidebarOpen
             ? "bg-[rgba(6,40,58,0.32)] backdrop-blur-[2px] pointer-events-auto"
             : "bg-transparent backdrop-blur-none pointer-events-none"
@@ -132,7 +132,7 @@ export function Navbar({ sidebarOpen: externalOpen, setSidebarOpen: externalSet 
       {/* Sağdan açılan menü paneli */}
       <div
         aria-hidden={!sidebarOpen}
-        className={`kk-menu-panel fixed top-0 right-0 w-[300px] max-w-[calc(100vw-32px)] max-h-screen overflow-y-auto z-[25] pt-5 pb-8 px-6 shadow-[-12px_16px_48px_-12px_rgba(6,40,58,0.28)] border-l border-b border-[rgba(10,42,58,0.08)] rounded-bl-[24px] bg-[rgba(246,241,231,0.96)] backdrop-blur-[28px] transition-transform duration-500 ${
+        className={`kk-menu-panel fixed top-0 right-0 w-[300px] max-w-[calc(100vw-32px)] max-h-screen overflow-y-auto z-[35] pt-5 pb-8 px-6 shadow-[-12px_16px_48px_-12px_rgba(6,40,58,0.28)] border-l border-b border-[rgba(10,42,58,0.08)] rounded-bl-[24px] bg-[rgba(246,241,231,0.96)] backdrop-blur-[28px] transition-transform duration-500 ${
           sidebarOpen ? "translate-y-0" : "-translate-y-[105%]"
         }`}
       >
@@ -165,9 +165,6 @@ export function Navbar({ sidebarOpen: externalOpen, setSidebarOpen: externalSet 
           </Button>
         </div>
 
-        <p className="text-[11px] text-[#8b8374] tracking-[0.16em] uppercase font-semibold m-0 mb-3.5">
-          Menü
-        </p>
         <nav className="flex flex-col gap-0">
           {[
             { label: "Hocalar", href: "/hocalar" },
@@ -204,15 +201,26 @@ export function Navbar({ sidebarOpen: externalOpen, setSidebarOpen: externalSet 
                 <ArrowRight size={16} color="currentColor" strokeWidth={2} className="shrink-0" />
               </Button>
             ) : (
-              <Button
-                variant="kk-ghost-link"
-                size="unsized"
-                onClick={() => { setSidebarOpen(false); router.push("/login"); }}
-                className="w-full justify-between text-left gap-3 px-1 py-4 rounded-none border-b border-[#0a2a3a]/08 hover:pl-3 transition-all duration-200 text-kk-blue-light"
-              >
-                <p className="display-serif m-0 text-[17px] font-medium tracking-[-0.01em]">Giriş Yap</p>
-                <ArrowRight size={16} color="#006392" strokeWidth={2} className="shrink-0" />
-              </Button>
+              <>
+                <Button
+                  variant="kk-ghost-link"
+                  size="unsized"
+                  onClick={() => { setSidebarOpen(false); router.push("/register"); }}
+                  className="w-full justify-between text-left gap-3 px-1 py-4 rounded-none border-b border-[#0a2a3a]/08 hover:pl-3 transition-all duration-200 text-[#06283a]"
+                >
+                  <p className="display-serif m-0 text-[17px] font-medium tracking-[-0.01em]">Kayıt Ol</p>
+                  <ArrowRight size={16} color="#006392" strokeWidth={2} className="shrink-0" />
+                </Button>
+                <Button
+                  variant="kk-ghost-link"
+                  size="unsized"
+                  onClick={() => { setSidebarOpen(false); router.push("/login"); }}
+                  className="w-full justify-between text-left gap-3 px-1 py-4 rounded-none border-b border-[#0a2a3a]/08 hover:pl-3 transition-all duration-200 text-kk-blue-light"
+                >
+                  <p className="display-serif m-0 text-[17px] font-medium tracking-[-0.01em]">Giriş Yap</p>
+                  <ArrowRight size={16} color="#006392" strokeWidth={2} className="shrink-0" />
+                </Button>
+              </>
             )
           )}
         </nav>
@@ -234,7 +242,7 @@ export function Navbar({ sidebarOpen: externalOpen, setSidebarOpen: externalSet 
           </div>
 
           {/* ── Orta: Arama */}
-          {mounted && !isLoginPage && !isRegisterPage && pathname !== "/" && (
+          {mounted && !isLoginPage && !isRegisterPage && pathname !== "/" && pathname !== "/hocalar" && pathname !== "/suggest" && (
             <form
               ref={searchRef}
               onSubmit={e => e.preventDefault()}

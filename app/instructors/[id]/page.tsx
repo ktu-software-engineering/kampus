@@ -191,7 +191,7 @@ export default async function InstructorPage({ params }: PageProps) {
       <BackgroundTexture />
       <Navbar />
 
-      <main className="flex-grow relative z-10 pt-28 pb-20 px-4 md:px-8 max-w-7xl mx-auto w-full">
+      <main className="flex-grow relative z-10 pt-10 md:pt-20 pb-20 px-4 md:px-8 max-w-7xl mx-auto w-full">
 
         {/* Üst Bilgi Kartı */}
         <section className="mb-12">

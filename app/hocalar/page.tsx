@@ -17,11 +17,12 @@ interface Props {
     unvan?: string;
     siralama?: string;
     sayfa?: string;
+    q?: string;
   }>;
 }
 
 export default async function HocalarPage({ searchParams }: Props) {
-  const { bolum, unvan, siralama, sayfa } = await searchParams;
+  const { bolum, unvan, siralama, sayfa, q } = await searchParams;
   const page = Math.max(1, parseInt(sayfa ?? "1"));
   const from = (page - 1) * PER_PAGE;
   const to = from + PER_PAGE - 1;
@@ -61,6 +62,13 @@ export default async function HocalarPage({ searchParams }: Props) {
     query = titles.length === 1 ? query.eq("title", titles[0]) : query.in("title", titles);
   }
   if (filteredIds) query = filteredIds.length > 0 ? query.in("id", filteredIds) : query.in("id", ["00000000-0000-0000-0000-000000000000"]);
+  if (q?.trim()) {
+    // Türkçe karakterleri normalize et ve hem orijinal hem normalize halde ara
+    const normalizedQ = q.trim().toLowerCase()
+      .replace(/ş/g,"s").replace(/ğ/g,"g").replace(/ü/g,"u")
+      .replace(/ö/g,"o").replace(/ı/g,"i").replace(/ç/g,"c");
+    query = query.or(`full_name.ilike.%${q.trim()}%,slug.ilike.%${normalizedQ}%`);
+  }
 
   // avg_rating NULL olan (yorum yok) kayıtlar nullsFirst:false ile sona gider
   const ratingCol = orderCol === "average_rating" ? "avg_rating" : orderCol;
@@ -104,6 +112,7 @@ export default async function HocalarPage({ searchParams }: Props) {
           currentBolum={bolum ?? ""}
           currentUnvan={unvan ?? ""}
           currentSiralama={siralama ?? "puan_azalan"}
+          currentQ={q ?? ""}
           totalCount={count ?? 0}
         />
       </main>
