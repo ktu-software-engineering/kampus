@@ -11,11 +11,12 @@ interface Props {
     bolum?: string;
     siralama?: string;
     sayfa?: string;
+    q?: string;
   }>;
 }
 
 export default async function DerslerPage({ searchParams }: Props) {
-  const { bolum, siralama, sayfa } = await searchParams;
+  const { bolum, siralama, sayfa, q } = await searchParams;
   const page = Math.max(1, parseInt(sayfa ?? "1"));
   const from = (page - 1) * PER_PAGE;
   const to = from + PER_PAGE - 1;
@@ -43,6 +44,7 @@ export default async function DerslerPage({ searchParams }: Props) {
     .select("id, code, name, department_name, review_count, avg_course_difficulty, avg_exam_difficulty", { count: "exact" });
 
   if (bolum) query = query.eq("department_name", bolum);
+  if (q && q.length >= 2) query = query.or(`name.ilike.%${q}%,code.ilike.%${q}%`);
 
   query = query
     .order(sort.col, { ascending: sort.asc, nullsFirst: false })
@@ -51,6 +53,21 @@ export default async function DerslerPage({ searchParams }: Props) {
 
   const { data: courses, count } = await query;
   const totalPages = Math.ceil((count ?? 0) / PER_PAGE);
+
+  // Her ders için hocaları çek
+  const courseIds = (courses ?? []).map((c: any) => c.id);
+  const courseInstructorMap: Record<string, { id: string; full_name: string; title: string | null; slug: string }[]> = {};
+  if (courseIds.length > 0) {
+    const { data: ciRows } = await supabase
+      .from("course_instructors")
+      .select("course_id, instructors(id, full_name, title, slug)")
+      .in("course_id", courseIds);
+    (ciRows ?? []).forEach((row: any) => {
+      if (!row.instructors) return;
+      if (!courseInstructorMap[row.course_id]) courseInstructorMap[row.course_id] = [];
+      courseInstructorMap[row.course_id].push(row.instructors);
+    });
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-kk-beige relative overflow-x-hidden font-sans">
@@ -73,11 +90,13 @@ export default async function DerslerPage({ searchParams }: Props) {
             review_count: Number(c.review_count ?? 0),
             avg_course_difficulty: c.avg_course_difficulty != null ? Number(c.avg_course_difficulty) : 0,
             avg_exam_difficulty: c.avg_exam_difficulty != null ? Number(c.avg_exam_difficulty) : 0,
+            instructors: courseInstructorMap[c.id] ?? [],
           }))}
           totalPages={totalPages}
           currentPage={page}
           currentBolum={bolum ?? ""}
           currentSiralama={siralama ?? "ders_azalan"}
+          currentQ={q ?? ""}
           totalCount={count ?? 0}
         />
       </main>
