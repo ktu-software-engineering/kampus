@@ -46,9 +46,10 @@ interface ReviewCardProps {
   initialReported: boolean;
   initialUpvoted: boolean;
   initialDownvoted: boolean;
+  initialReplied: boolean;
 }
 
-function ReviewCard({ id: _id, course, date, rating, comment, upvotes: initialUpvotes, teachingQuality, difficulty, examDifficulty, isLoggedIn, onLoginRequired, initialReported, initialUpvoted, initialDownvoted }: ReviewCardProps) {
+function ReviewCard({ id: _id, course, date, rating, comment, upvotes: initialUpvotes, teachingQuality, difficulty, examDifficulty, isLoggedIn, onLoginRequired, initialReported, initialUpvoted, initialDownvoted, initialReplied }: ReviewCardProps) {
   const [vote, setVote] = useState<"up" | "down" | null>(initialUpvoted ? "up" : initialDownvoted ? "down" : null);
   const [currentUpvotes, setCurrentUpvotes] = useState(initialUpvotes);
   const [showReplyForm, setShowReplyForm] = useState(false);
@@ -213,7 +214,8 @@ function ReviewCard({ id: _id, course, date, rating, comment, upvotes: initialUp
             </button>
           </div>
 
-          {/* Cevap Ver */}
+          {/* Cevap Ver — sadece henüz cevap vermediyse göster */}
+          {!initialReplied && (
           <div className="relative">
             <button
               onClick={() => {
@@ -239,6 +241,7 @@ function ReviewCard({ id: _id, course, date, rating, comment, upvotes: initialUp
               </>
             )}
           </div>
+          )}
         </div>
 
         {/* Şikayet */}
@@ -500,13 +503,14 @@ interface Props {
   reportedReviewIds: string[];
   upvotedReviewIds: string[];
   downvotedReviewIds: string[];
+  repliedReviewIds: string[];
 }
 
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" });
 }
 
-export default function InstructorContent({ instructorId, instructorSlug, instructorName, courses, reviews, averages, isLoggedIn, hasReviewed, reportedReviewIds, upvotedReviewIds, downvotedReviewIds }: Props) {
+export default function InstructorContent({ instructorId, instructorSlug, instructorName, courses, reviews, averages, isLoggedIn, hasReviewed, reportedReviewIds, upvotedReviewIds, downvotedReviewIds, repliedReviewIds }: Props) {
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
 
@@ -636,6 +640,7 @@ export default function InstructorContent({ instructorId, instructorSlug, instru
               initialReported={reportedReviewIds.includes(review.id)}
               initialUpvoted={upvotedReviewIds.includes(review.id)}
               initialDownvoted={downvotedReviewIds.includes(review.id)}
+              initialReplied={repliedReviewIds.includes(review.id)}
             />
           ))
         )}

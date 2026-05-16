@@ -611,7 +611,7 @@ export default function HomePage() {
                         </div>
                       </div>
                       <div className="flex flex-col items-end gap-[2px] shrink-0">
-                        {item.average_rating > 0 && <StarRating value={item.average_rating} />}
+                        {item.average_rating > 0 && <StarRating value={parseFloat(item.average_rating.toFixed(1))} />}
                         <div className="flex items-center gap-[3px]">
                           <TrendingUp size={10} color="#2f8c4f" strokeWidth={2.5} />
                           <span className="text-[10.5px] text-[#2f8c4f] font-bold">+{item.week_reviews} bu hafta</span>

@@ -166,19 +166,22 @@ export default async function InstructorPage({ params }: PageProps) {
   let upvotedReviewIds: string[]   = [];
   let downvotedReviewIds: string[] = [];
 
-  // Kullanıcının şikayet ettiği yorum ID'leri
+  // Kullanıcının şikayet ettiği yorum ID'leri + cevap verdiği yorum ID'leri
   let reportedReviewIds: string[] = [];
+  let repliedReviewIds: string[] = [];
   if (user) {
     const reviewIds = reviews.map((r: any) => r.id);
     if (reviewIds.length > 0) {
-      const [{ data: userReports }, { data: userUpvotes }, { data: userDownvotes }] = await Promise.all([
+      const [{ data: userReports }, { data: userUpvotes }, { data: userDownvotes }, { data: userReplies }] = await Promise.all([
         supabase.from("reports").select("review_id").eq("reported_by", user.id).in("review_id", reviewIds),
         supabase.from("review_upvotes").select("review_id").eq("user_id", user.id).in("review_id", reviewIds),
         supabase.from("review_downvotes").select("review_id").eq("user_id", user.id).in("review_id", reviewIds),
+        supabase.from("review_replies").select("review_id").eq("user_id", user.id).in("review_id", reviewIds),
       ]);
       reportedReviewIds  = (userReports    ?? []).map((r: any) => r.review_id);
       upvotedReviewIds   = (userUpvotes    ?? []).map((r: any) => r.review_id);
       downvotedReviewIds = (userDownvotes  ?? []).map((r: any) => r.review_id);
+      repliedReviewIds   = (userReplies    ?? []).map((r: any) => r.review_id);
     }
   }
 
@@ -257,6 +260,7 @@ export default async function InstructorPage({ params }: PageProps) {
           reportedReviewIds={reportedReviewIds}
           upvotedReviewIds={upvotedReviewIds}
           downvotedReviewIds={downvotedReviewIds}
+          repliedReviewIds={repliedReviewIds}
         />
       </main>
 
