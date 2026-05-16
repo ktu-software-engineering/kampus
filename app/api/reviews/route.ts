@@ -4,7 +4,7 @@ import { z } from "zod";
 const schema = z.object({
   instructor_id:     z.string().min(1),
   course_id:         z.string().optional(), // "genel" veya boş ise null kaydedilir
-  teaching_quality:  z.number().min(1).max(5),
+  teaching_quality:  z.number().min(0.5).max(5),
   course_difficulty: z.number().min(1).max(5),
   exam_difficulty:   z.number().min(1).max(5),
   comment: z.string().max(500).optional(),
