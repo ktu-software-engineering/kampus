@@ -113,7 +113,7 @@ function KTUWatermark() {
       width={400}
       height={400}
       loading="eager"
-      className="object-contain opacity-15 select-none pointer-events-none block"
+      className="object-contain opacity-15 select-none pointer-events-none block w-full h-auto"
       style={{
         filter:
           "brightness(0) saturate(100%) " +
@@ -359,7 +359,7 @@ export default function HomePage() {
         <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
         {/* Hero */}
-        <section className="relative overflow-hidden -mt-[110px]">
+        <section className="relative overflow-hidden -mt-[110px] w-full">
           <div
             aria-hidden="true"
             className="absolute inset-0 z-0 bg-cover bg-[center_30%]"
@@ -430,14 +430,14 @@ export default function HomePage() {
         />
 
         {/* Hızlı erişim kartları — gradyanın altında */}
-        <div className="kk-cat-section relative z-[6] bg-kk-beige pt-2 pb-14 px-6">
-          <div className="kk-cat-strip max-w-[820px] mx-auto grid grid-cols-3 gap-5 items-end">
+        <div className="relative z-[6] bg-kk-beige pt-2 pb-14 px-3 sm:px-6">
+          <div className="max-w-[820px] mx-auto grid grid-cols-3 gap-2 sm:gap-5 items-end">
             {CATEGORIES.map(({ label, desc }, idx) => (
-              <div key={label} className="kk-cat-wrapper relative h-[160px] md:h-[118px]">
+              <div key={label} className="relative h-[140px] sm:h-[160px] md:h-[118px]">
                 <Button
                   variant="kk-cat"
                   size="unsized"
-                  className="kk-cat-cell backdrop-blur-[18px] absolute top-0 left-0 right-0 bottom-0 md:bottom-auto overflow-hidden"
+                  className="backdrop-blur-[18px] absolute top-0 left-0 right-0 bottom-0 md:bottom-auto overflow-hidden"
                   onClick={() => {
                     if (idx === 1) router.push("/hocalar");
                     if (idx === 2) router.push("/dersler");
@@ -467,17 +467,17 @@ export default function HomePage() {
         </div>
 
         {/* Highlights */}
-        <section className="kk-highlights-section relative pt-7 pb-24 px-6 bg-kk-beige">
+        <section className="relative pt-7 pb-24 px-4 sm:px-6 bg-kk-beige overflow-hidden">
           <div
             aria-hidden="true"
-            className="absolute top-[48%] left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0"
+            className="absolute top-[48%] left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0 w-[260px] md:w-[400px]"
           >
             <KTUWatermark />
           </div>
 
           <div className="relative z-[3] max-w-[1100px] mx-auto">
             {/* CTA bandı */}
-            <div className="kk-cta-banner relative bg-[rgba(6,40,58,0.58)] backdrop-blur-[28px] saturate-[140%] rounded-[24px] py-9 px-11 text-kk-beige border border-white/14 overflow-hidden mb-14">
+            <div className="relative bg-[rgba(6,40,58,0.58)] backdrop-blur-[28px] saturate-[140%] rounded-[20px] sm:rounded-[24px] py-7 sm:py-9 px-5 sm:px-11 text-kk-beige border border-white/14 overflow-hidden mb-14">
               <div
                 aria-hidden="true"
                 className="absolute inset-0 pointer-events-none bg-[repeating-linear-gradient(-38deg,transparent_0px,transparent_16px,rgba(255,255,255,0.045)_16px,rgba(255,255,255,0.045)_17px,transparent_17px,transparent_38px)]"
@@ -486,32 +486,32 @@ export default function HomePage() {
                 aria-hidden="true"
                 className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_60%_80%_at_0%_0%,rgba(255,255,255,0.10)_0%,transparent_55%),radial-gradient(ellipse_40%_60%_at_100%_100%,rgba(0,99,146,0.18)_0%,transparent_65%)]"
               />
-              <div className="kk-cta-inner relative flex items-center justify-between gap-9 flex-wrap">
-                <div className="flex items-center gap-[22px] flex-auto min-w-0">
-                  <div className="w-[62px] h-[62px] rounded-2xl bg-kk-beige/12 border border-kk-beige/24 flex items-center justify-center shrink-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.18)]">
-                    <PenLine size={26} color="var(--color-kk-beige)" strokeWidth={1.6} />
+              <div className="relative flex flex-col min-[860px]:flex-row items-start min-[860px]:items-center justify-between gap-6 min-[860px]:gap-9">
+                <div className="flex items-center gap-4 sm:gap-[22px] min-w-0">
+                  <div className="w-[52px] h-[52px] sm:w-[62px] sm:h-[62px] rounded-2xl bg-kk-beige/12 border border-kk-beige/24 flex items-center justify-center shrink-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.18)]">
+                    <PenLine size={22} color="var(--color-kk-beige)" strokeWidth={1.6} />
                   </div>
                   <div className="min-w-0">
-                    <h2 className="display-serif text-[clamp(24px,3vw,32px)] font-medium m-0 mb-1.5 tracking-[-0.015em] leading-[1.18] text-kk-beige">
+                    <h2 className="display-serif text-[clamp(20px,3vw,32px)] font-medium m-0 mb-1.5 tracking-[-0.015em] leading-[1.18] text-kk-beige">
                       Sen de değerlendir,{" "}
                       <em className="display-serif italic font-medium text-[#f0c875]">
                         fark yarat
                       </em>
                     </h2>
-                    <p className="text-[14.5px] m-0 opacity-[0.78] leading-[1.55] max-w-[560px] text-kk-beige">
+                    <p className="text-[13.5px] sm:text-[14.5px] m-0 opacity-[0.78] leading-[1.55] max-w-[560px] text-kk-beige">
                       Üniversiteni ve hocalarını değerlendirerek geleceğin öğrencilerine
                       ışık tut. Birlikte daha şeffaf bir akademi inşa edelim.
                     </p>
                   </div>
                 </div>
-                <Button variant="kk-cta" size="unsized" className="kk-cta-btn" onClick={() => router.push("/hocalar")}>
+                <Button variant="kk-cta" size="unsized" className="w-full min-[860px]:w-auto justify-center" onClick={() => router.push("/hocalar")}>
                   Hemen Başla <ArrowRight size={16} strokeWidth={2.25} />
                 </Button>
               </div>
             </div>
 
             {/* İki sütunlu yerleşim */}
-            <div className="responsive-grid grid grid-cols-[1fr_360px] gap-8 items-start">
+            <div className="grid grid-cols-1 min-[860px]:grid-cols-[1fr_360px] gap-8 items-start">
               {/* Sol: Son değerlendirmeler */}
               <div>
                 <div className="flex justify-between items-baseline mb-[22px] pl-1">
@@ -532,9 +532,9 @@ export default function HomePage() {
                       onClick={() => review.instructor && router.push(`/instructors/${review.instructor.slug}`)}
                       className="relative bg-[#FFfdf8]/80 rounded-[20px] py-[22px] px-6 border border-white/80 shadow-[0_6px_28px_-12px_rgba(6,40,58,0.10),inset_0_1px_0_rgba(255,255,255,0.75)] cursor-pointer transition-all duration-250 overflow-hidden hover:-translate-y-[3px] hover:shadow-[0_18px_44px_-14px_rgba(6,40,58,0.18),inset_0_1px_0_rgba(255,255,255,0.9)] hover:border-[#009992]/28 hover:bg-[#FFfdf8]/90"
                     >
-                      <div className="relative flex justify-between items-start mb-3 gap-3">
-                        <div className="flex-1 min-w-0">
-                          <h3 className="display-serif text-[18px] font-semibold text-kk-blue m-0 mb-2 tracking-[-0.01em]">
+                      <div className="relative flex justify-between items-start mb-3 gap-2">
+                        <div className="flex-1 min-w-0 overflow-hidden">
+                          <h3 className="display-serif text-[16px] sm:text-[18px] font-semibold text-kk-blue m-0 mb-2 tracking-[-0.01em] truncate">
                             {review.instructor
                               ? (review.instructor.title
                                   ? `${review.instructor.title} ${review.instructor.full_name}`
@@ -542,22 +542,22 @@ export default function HomePage() {
                               : "Bilinmeyen Hoca"}
                           </h3>
                           {review.course && (
-                            <span className="bg-kk-blue-light/10 text-kk-blue-light py-[3px] px-[11px] rounded-[20px] text-[11px] font-semibold tracking-[0.01em] border border-kk-blue-light/18">
+                            <span className="inline-block max-w-full truncate bg-kk-blue-light/10 text-kk-blue-light py-[3px] px-[11px] rounded-[20px] text-[11px] font-semibold tracking-[0.01em] border border-kk-blue-light/18">
                               {review.course.code} — {review.course.name}
                             </span>
                           )}
                         </div>
                         <div className="text-right shrink-0">
-                          <div className="flex items-center gap-1 justify-end mb-1">
+                          <div className="flex items-center gap-[2px] sm:gap-1 justify-end mb-1">
                             {[1,2,3,4,5].map(s => (
-                              <Star key={s} size={17}
+                              <Star key={s} size={14}
                                 fill={s <= Math.round(review.rating) ? "var(--color-kk-gold)" : "transparent"}
                                 color={s <= Math.round(review.rating) ? "var(--color-kk-gold)" : "#c9c2b5"}
                               />
                             ))}
-                            <span className="text-[14px] font-bold text-kk-gold ml-1">{review.rating}</span>
+                            <span className="text-[13px] font-bold text-kk-gold ml-1">{review.rating}</span>
                           </div>
-                          <p className="text-[10.5px] text-[#a8a090] m-0 mt-[3px] tracking-[0.01em]">
+                          <p className="text-[10px] text-[#a8a090] m-0 mt-[3px] tracking-[0.01em]">
                             {new Date(review.created_at).toLocaleDateString("tr-TR", { day:"numeric", month:"long" })}
                           </p>
                         </div>
@@ -633,35 +633,8 @@ export default function HomePage() {
       </div>
 
       <style>{`
-        @media (max-width: 860px) {
-          .responsive-grid { grid-template-columns: 1fr !important; }
-          .kk-cta-inner { flex-direction: column !important; align-items: flex-start !important; gap: 24px !important; }
-          .kk-cta-btn { width: 100% !important; justify-content: center !important; }
-        }
-        @media (max-width: 768px) {
-          .desktop-nav-links { display: none !important; }
-          .login-btn { padding: 9px 16px !important; margin-left: 0 !important; }
-          .kk-header { padding: 14px 18px !important; }
-          .kk-hero-pad { padding: 150px 20px 44px !important; }
-          .kk-cat-section { padding: 16px 16px 24px !important; }
-          .kk-highlights-section { padding: 20px 18px 72px !important; }
-          .kk-cta-banner { padding: 28px 24px !important; border-radius: 20px !important; }
-        }
-        @media (max-width: 640px) {
-          .kk-cat-strip { grid-template-columns: repeat(3, 1fr) !important; gap: 12px !important; max-width: 100% !important; }
-          .kk-cat-cell { padding: 20px 10px 16px !important; border-radius: 18px !important; }
-          .kk-cat-wrapper { height: 140px !important; }
-          .kk-footer-inner { flex-direction: column !important; align-items: flex-start !important; gap: 8px !important; }
-        }
-        @media (max-width: 420px) {
-          .kk-cat-strip { grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; }
-        }
         @media (min-width: 769px) {
           .mobile-hamburger { display: none !important; }
-        }
-        @media (max-width: 768px) {
-          .kk-logo-group { flex-direction: column !important; align-items: center !important; gap: 6px !important; }
-          .kk-site-logo { height: 46px !important; margin-left: 4px !important; }
         }
       `}</style>
     </div>

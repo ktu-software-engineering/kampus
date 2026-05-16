@@ -232,7 +232,7 @@ export function CourseFilters({ departments, courses, totalPages, currentPage, c
 
                   {/* ── ÖN YÜZ ── */}
                   <div
-                    className={`bg-white/70 backdrop-blur-md rounded-2xl p-5 border border-[#e8e2d9] transition-[border-color,box-shadow] duration-200 ${(isSingle || isMulti) ? "cursor-pointer hover:border-kk-blue-light/40 hover:shadow-[0_8px_24px_-8px_rgba(6,40,58,0.15)]" : ""}`}
+                    className={`bg-[#FCFBF7] rounded-2xl p-5 border border-[#e8e2d9] transition-[border-color,box-shadow] duration-200 ${(isSingle || isMulti) ? "cursor-pointer hover:border-kk-blue-light/40 hover:shadow-[0_8px_24px_-8px_rgba(6,40,58,0.15)]" : ""}`}
                     style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
                   >
                     {/* İkon */}
@@ -286,7 +286,7 @@ export function CourseFilters({ departments, courses, totalPages, currentPage, c
 
                   {/* ── ARKA YÜZ ── */}
                   <div
-                    className="absolute inset-0 bg-white/70 backdrop-blur-md rounded-2xl p-5 flex flex-col cursor-default border border-[#e8e2d9]"
+                    className="absolute inset-0 bg-[#FCFBF7] rounded-2xl p-5 flex flex-col cursor-default border border-[#e8e2d9]"
                     style={{
                       backfaceVisibility: "hidden",
                       WebkitBackfaceVisibility: "hidden",
