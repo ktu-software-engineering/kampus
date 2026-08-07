@@ -1,5 +1,7 @@
 # KampusKarne
 
+www.kampuskarne.com
+
 Türkiye'nin ilk üniversite ders ve eğitmen değerlendirme platformu.
 
 Öğrencilerin hocaları ve dersleri **anonim olarak** değerlendirebildiği, ders seçiminde ve üniversite tercihinde veri odaklı karar almayı sağlayan web platformu. RateMyProfessor'dan ilham alınarak Türkiye'ye özgü bir yapıda tasarlanmıştır.
